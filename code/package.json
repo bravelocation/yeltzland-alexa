@@ -1,0 +1,12 @@
+{
+  "name": "yeltzland-alexa",
+  "description": "Alexa skill to get HTFC data",
+  "author": "John Pollard <johnp@bravelocation.com>",
+  "version": "0.1.0",
+  "main": "index.js",
+  "dependencies": {
+    "request": "*",
+    "dateFormat": "*"
+  },
+  "license": "MIT"
+}

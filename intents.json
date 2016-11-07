@@ -1,0 +1,41 @@
+{
+  "intents": [
+    {
+      "intent": "FixtureIntent",
+      "slots": [
+        {
+          "name": "Team",
+          "type": "LIST_OF_TEAMS"
+        }
+      ]
+    },
+    {
+      "intent": "ResultIntent",
+      "slots": [
+        {
+          "name": "Team",
+          "type": "LIST_OF_TEAMS"
+        }
+      ]
+    },
+    {
+      "intent": "NextGameIntent"
+    },
+    {
+      "intent": "LastResultIntent"
+    },
+    {
+      "intent": "BestTeamIntent"
+    },
+    {
+      "intent": "WorstTeamIntent"
+    },
+    {
+      "intent": "GameScoreIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    }
+  ]
+}
+
