@@ -13,7 +13,7 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
         card: {
             type: 'Simple',
             title: `Yeltzland - ${title}`,
-            content: `Yeltzland - ${output}`,
+            content: `${output}`,
         },
         reprompt: {
             outputSpeech: {
@@ -80,18 +80,20 @@ var getJSON = function(url, callback) {
  * Team functions
  */
 function teamBasedData(intent, session, callback) {
-    const cardTitle = intent.name;
     const teamSlot = intent.slots.Team;
-    let sessionAttributes = {};
     let speechOutput = "";
+    let repromptText = null;
     var team = "";
     if (teamSlot) {
         team = teamSlot.value;
     }
 
+    const cardTitle = "Halesowen games against " + team;
+
     getJSON("https://bravelocation.com/automation/feeds/matches.json", function(err, data) {
             if (err != null) {
                 speechOutput = "I'm sorry I couldn't find that out right now";
+                repromptText = "Please try again later";
             } else {
                 var fixtures = [];
                 var results = [];
@@ -124,7 +126,7 @@ function teamBasedData(intent, session, callback) {
                 }
             }
 
-            callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, null, false));
+            callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
         });
 }
 
@@ -181,12 +183,13 @@ function parseDate(dateString) {
 }
 
 function gameScore(intent, session, callback) {
-    const sessionAttributes = {};
-    var speechOutput = "";
+    let speechOutput = "";
+    let repromptText = null;
 
     getJSON("https://bravelocation.com/automation/feeds/gamescore.json", function(err, data) {
         if (err != null) {
             speechOutput = "I'm sorry I couldn't find that out right now";
+            repromptText = "Please try again later";
         } else {
             var opponent = data.match.Opponent;
             var home = (data.match.Home == "1");
@@ -198,43 +201,32 @@ function gameScore(intent, session, callback) {
             if (home) {
                 speechOutput += "Halesowen Town " + yeltzScore + ", " + opponent + " " + opponentScore;
             } else {
-                speechOutput += opponent + " " + opponentScorev + ", Halesowen Town " + yeltzScore;               
+                speechOutput += opponent + " " + opponentScore + ", Halesowen Town " + yeltzScore;               
             }
         }
 
-        callback(sessionAttributes, buildSpeechletResponse(intent.name, speechOutput, null, false));
+        callback({}, buildSpeechletResponse("Latest score", speechOutput, repromptText, false));
        });
     }
 
 function bestTeam(intent, session, callback) {
-    const repromptText = null;
-    const sessionAttributes = {};
-    let shouldEndSession = false;
-    let speechOutput = 'The best team is Halesowen Town';
-
-    callback(sessionAttributes,
-         buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+    callback({}, buildSpeechletResponse("Who's the best team?", "The best team is Halesowen Town", null, false));
 }
 
 function worstTeam(intent, session, callback) {
-    const repromptText = null;
-    const sessionAttributes = {};
-    let shouldEndSession = false;
-    let speechOutput = 'The worst team are Stourbridge Town';
-
-    callback(sessionAttributes,
-         buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+    callback({}, buildSpeechletResponse("Who's the worst team?", "The worst team are Stourbridge Town", null, false));
 }
 
 
 function singleGame(intent, session, callback) {
-    const cardTitle = intent.name;
-    let sessionAttributes = {};
+    let cardTitle = "";
     let speechOutput = "";
+    let repromptText = null;
 
     getJSON("https://bravelocation.com/automation/feeds/matches.json", function(err, data) {
             if (err != null) {
                 speechOutput = "I'm sorry I couldn't find that out right now";
+                repromptText = "Please try again later";
             } else {
                 var nextGame = null;
                 var lastGame = null;
@@ -255,6 +247,7 @@ function singleGame(intent, session, callback) {
                 var matches = [];
 
                 if (intent.name == "NextGameIntent") {
+                    cardTitle = "Next game";
                     if (nextGame == null) {
                         speechOutput = "No more fixtures found";
                     } else {
@@ -262,6 +255,7 @@ function singleGame(intent, session, callback) {
                         speechOutput = matchesToSpeech(matches);
                     }
                 } else if (intent.name == "LastResultIntent") {
+                    cardTitle = "Last game";
                     if (lastGame == null) {
                         speechOutput = "No more games found";
                     } else {
@@ -271,7 +265,7 @@ function singleGame(intent, session, callback) {
                 }
             }
 
-            callback(sessionAttributes, buildSpeechletResponse(cardTitle, speechOutput, null, false));
+            callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
         });
 }
 
