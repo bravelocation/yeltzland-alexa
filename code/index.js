@@ -37,26 +37,11 @@ function buildResponse(sessionAttributes, speechletResponse) {
 // --------------- Functions that control the skill's behavior -----------------------
 
 function getWelcomeResponse(callback) {
-    // If we wanted to initialize the session to have some attributes we could add those here.
-    const sessionAttributes = {};
-    const cardTitle = 'Welcome';
-    const speechOutput = 'Welcome to Yeltzland. What do you want to know about the mighty Yeltz?';
-    // If the user either does not reply to the welcome message or says something that is not
-    // understood, they will be prompted again with this text.
-    const repromptText = 'Try something like when do we play Workington?';
-    const shouldEndSession = false;
-
-    callback(sessionAttributes,
-        buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+    callback({}, buildSpeechletResponse('Welcome', 'Welcome to Yeltzland. What do you want to know about the mighty Yeltz?', null, false));
 }
 
 function handleSessionEndRequest(callback) {
-    const cardTitle = 'Session Ended';
-    const speechOutput = 'Thank you for trying Yeltzland';
-    // Setting this to true ends the session and exits the skill.
-    const shouldEndSession = true;
-
-    callback({}, buildSpeechletResponse(cardTitle, speechOutput, null, shouldEndSession));
+    callback({}, buildSpeechletResponse('Session Ended', 'Thanks for coming', null, true));
 }
 
 /**
@@ -126,7 +111,7 @@ function teamBasedData(intent, session, callback) {
                 }
             }
 
-            callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+            callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
         });
 }
 
@@ -205,16 +190,16 @@ function gameScore(intent, session, callback) {
             }
         }
 
-        callback({}, buildSpeechletResponse("Latest score", speechOutput, repromptText, false));
+        callback({}, buildSpeechletResponse("Latest score", speechOutput, repromptText, true));
        });
     }
 
 function bestTeam(intent, session, callback) {
-    callback({}, buildSpeechletResponse("Who's the best team?", "The best team is Halesowen Town", null, false));
+    callback({}, buildSpeechletResponse("Who's the best team?", "The best team is Halesowen Town", null, true));
 }
 
 function worstTeam(intent, session, callback) {
-    callback({}, buildSpeechletResponse("Who's the worst team?", "The worst team are Stourbridge Town", null, false));
+    callback({}, buildSpeechletResponse("Who's the worst team?", "The worst team are Stourbridge Town", null, true));
 }
 
 
@@ -265,7 +250,7 @@ function singleGame(intent, session, callback) {
                 }
             }
 
-            callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+            callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
         });
 }
 

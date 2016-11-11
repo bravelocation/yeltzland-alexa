@@ -7,8 +7,11 @@ WorstTeamIntent who are the worst team
 WorstTeamIntent who's the worst
 WorstTeamIntent who's the worst team
 FixtureIntent when is the game against {Team}
+FixtureIntent when's the game against {Team}
 FixtureIntent when do we play {Team}
 FixtureIntent when do we play against {Team}
+FixtureIntent when do we play next against {Team}
+FixtureIntent when do we play against {Team} next
 ResultIntent what was the result against {Team}
 ResultIntent what was the score against {Team}
 ResultIntent how did we get on against {Team}
@@ -20,6 +23,7 @@ GameScoreIntent what's the Halesowen score
 GameScoreIntent what is the Halesowen score
 GameScoreIntent what's the latest Halesowen score
 GameScoreIntent what is the latest Halesowen score
+GameScoreIntent how are Halesowen getting on
 NextGameIntent who are we playing next
 NextGameIntent who do we play next
 NextGameIntent who are Halesowen playing next
@@ -32,3 +36,5 @@ LastResultIntent what was Halesowen's last game
 LastResultIntent what was Halesowen's last result
 LastResultIntent who did Halesowen play last
 LastResultIntent who did Halesowen last play
+LastResultIntent how did we get on
+LastResultIntent how did we get on in the last game
