@@ -25,6 +25,27 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     };
 }
 
+function buildSpeechletMarkupResponse(title, outputMarkup, cardContent, shouldEndSession) {
+    return {
+        outputSpeech: {
+            type: 'SSML',
+            ssml: outputMarkup,
+        },
+        card: {
+            type: 'Simple',
+            title: `Yeltzland - ${title}`,
+            content: `${cardContent}`,
+        },
+        reprompt: {
+            outputSpeech: {
+                type: 'PlainText',
+                text: null,
+            },
+        },
+        shouldEndSession,
+    };
+}
+
 function buildResponse(sessionAttributes, speechletResponse) {
     return {
         version: '1.0',
@@ -195,11 +216,11 @@ function gameScore(intent, session, callback) {
     }
 
 function bestTeam(intent, session, callback) {
-    callback({}, buildSpeechletResponse("Who's the best team?", "The best team is Halesowen Town", null, true));
+    callback({}, buildSpeechletMarkupResponse("Who's the best team?", '<speak><p><emphasis level="strong">Halesowen Town</emphasis></p><p><emphasis level="strong">Halesowen Town F C</emphasis></p><p><emphasis level="strong">They\'re by far the greatest team</emphasis></p><p><emphasis level="strong">The world has ever seen</emphasis></p></speak>', "The best team are Halesowen Town", true));
 }
 
 function worstTeam(intent, session, callback) {
-    callback({}, buildSpeechletResponse("Who's the worst team?", "The worst team are Stourbridge Town", null, true));
+    callback({}, buildSpeechletMarkupResponse("Who's the worst team?", '<speak>The worst team are Stour <say-as interpret-as="expletive">bridge</say-as> Town</speak>', "The worst team are Stourbridge Town", true));
 }
 
 
