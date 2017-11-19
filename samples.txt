@@ -38,3 +38,7 @@ LastResultIntent who did Halesowen play last
 LastResultIntent who did Halesowen last play
 LastResultIntent how did we get on
 LastResultIntent how did we get on in the last game
+NextGameIntent when are we playing next
+NextGameIntent when do we play next
+NextGameIntent when are Halesowen playing next
+NextGameIntent when do Halesowen play next
