@@ -6,7 +6,8 @@
   "main": "index.js",
   "dependencies": {
     "request": "*",
-    "dateFormat": "*"
+    "dateFormat": "*",
+    "amazon-date-parser": "*"
   },
   "license": "MIT"
 }

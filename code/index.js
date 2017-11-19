@@ -1,6 +1,7 @@
 'use strict';
 var request = require("request");
 var dateFormat = require('dateformat');
+var AmazonDateParser = require('amazon-date-parser');
 
 // --------------- Helpers that build all of the responses -----------------------
 
@@ -136,6 +137,60 @@ function teamBasedData(intent, session, callback) {
         });
 }
 
+
+/**
+ * Time functions
+ */
+function timeBasedData(intent, session, callback) {
+    let speechOutput = "";
+    let repromptText = null;
+    const cardTitle = "Halesowen games";
+    
+    var timeSlot = intent.slots.date.value;
+    var timeStart = null;
+    var timeEnd = null;
+    
+    if (timeSlot) {
+        var eventDate = new AmazonDateParser(timeSlot);
+        timeStart = eventDate.startDate;
+        timeEnd = eventDate.endDate;
+    }
+
+    if (timeStart == null || timeEnd == null) {
+        callback({}, buildSpeechletResponse(cardTitle, "No games found on that day", repromptText, true));
+        return;
+    }
+
+ 
+    getJSON("https://bravelocation.com/automation/feeds/matches.json", function(err, data) {
+            if (err != null) {
+                speechOutput = "I'm sorry I couldn't find that out right now";
+                repromptText = "Please try again later";
+            } else {
+                var matches = [];
+
+                // Go through each of the matches
+                for (var i = 0; i < data.Matches.length; i++) {
+                    var match = data.Matches[i];      
+
+                    var matchDate = Date.parse(match.MatchDateTime);
+                    
+                    if (matchDate >= timeStart && matchDate <= timeEnd) {
+                        matches.push(match);
+                    }                
+                }
+
+                if (matches.length == 0) {
+                    speechOutput = "No games found on that day";
+                } else {
+                    speechOutput = matchesToSpeech(matches);
+                }
+            }
+
+            callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
+        });
+}
+
 function matchesToSpeech(matches) {
     var output = "";
 
@@ -150,19 +205,22 @@ function matchesToSpeech(matches) {
             output += (i > 0 ? "also " : "") + "played ";
         }
 
-        output += match.Opponent + (match.Home == "0" ? " away " : " at home ") + "on " + speakDate(match.MatchDateTime) + ". "; 
+        output += match.Opponent + (match.Home == "0" ? " away " : " at home ") + "on " + speakDate(match.MatchDateTime); 
 
         if (!fixture) {
             if (match.TeamScore > match.OpponentScore) {
-                output += "We won " + speakScore(match.TeamScore) + " " + speakScore(match.OpponentScore);
+                output += ". We won " + speakScore(match.TeamScore) + " " + speakScore(match.OpponentScore);
             } else if (match.TeamScore == match.OpponentScore) {
-                output += "We drew " + speakScore(match.TeamScore) + " " + speakScore(match.OpponentScore);
+                output += ". We drew " + speakScore(match.TeamScore) + " " + speakScore(match.OpponentScore);
             } else {
-                output += "We lost " + speakScore(match.OpponentScore) + " " + speakScore(match.TeamScore);
+                output += ". We lost " + speakScore(match.OpponentScore) + " " + speakScore(match.TeamScore);
             } 
             
-            output += ". "
-        }                      
+        } else {
+            output += " at " + speakTime(match.MatchDateTime);
+        }  
+        
+        output += ". ";       
     }  
 
     return output;
@@ -178,6 +236,22 @@ function speakScore(score) {
 
 function speakDate(dateString) {
     return dateFormat(parseDate(dateString), "dddd, mmmm dS, yyyy");
+}
+
+function speakTime(dateString) {
+    var parsedDate = parseDate(dateString);
+    var hours = parsedDate.getHours();
+    var minutes = parsedDate.getMinutes();
+    
+    if (hours > 12) {
+        hours -= 12;
+    }
+
+    if (minutes == 0) {
+        return hours.toString() + " o'clock";
+    } else {
+        return hours.toString() + " " + minutes.toString();        
+    }
 }
 
 function parseDate(dateString) {
@@ -236,7 +310,8 @@ function singleGame(intent, session, callback) {
             } else {
                 var nextGame = null;
                 var lastGame = null;
-
+                var timeGame = null;
+                
                 // Go through each of the matches
                 for (var i = 0; i < data.Matches.length; i++) {
                     var match = data.Matches[i];      
@@ -316,6 +391,8 @@ function onIntent(intentRequest, session, callback) {
         singleGame(intent, session, callback);
     } else if (intentName === 'LastResultIntent') {
         singleGame(intent, session, callback);
+    } else if (intentName === 'GameTimeIntent') {
+        timeBasedData(intent, session, callback);
     } else if (intentName === 'GameScoreIntent') {
         gameScore(intent, session, callback);
     } else if (intentName === 'AMAZON.HelpIntent') {

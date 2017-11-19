@@ -34,6 +34,15 @@
       "intent": "GameScoreIntent"
     },
     {
+      "intent": "GameTimeIntent",
+      "slots": [
+        {
+          "name": "date",
+          "type": "AMAZON.DATE"
+        }
+      ]
+    },
+    {
       "intent": "AMAZON.HelpIntent"
     }
   ]
