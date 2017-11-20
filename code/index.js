@@ -12,9 +12,13 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
             text: output,
         },
         card: {
-            type: 'Simple',
+            type: 'Standard',
             title: `Yeltzland - ${title}`,
-            content: `${output}`,
+            text: `${output}`,
+            image: {
+                "smallImageUrl": "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_large.png",
+                "largeImageUrl": "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_large.png"
+            }
         },
         reprompt: {
             outputSpeech: {
