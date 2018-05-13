@@ -9,5 +9,12 @@
     "dateformat": "*",
     "amazon-date-parser": "*"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "bst": "0.0.1",
+    "mocha": "^5.1.1"
+  },
+  "scripts": {
+    "test": "mocha"
+  }
 }
