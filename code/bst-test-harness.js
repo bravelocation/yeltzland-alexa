@@ -54,13 +54,25 @@ var testResultHandler = function(err, response, responseStart, done) {
     
     // Check the response starts with the given text
     var result = JSON.parse(response);
-    var responseText = result.response.outputSpeech.text;
-    var expectedOutputFound = responseText.startsWith(responseStart);
 
-    if (expectedOutputFound) {
-        done();
-    } else {
-        done("ERROR: Unexpected text: " + result.response.outputSpeech.text);
+    if (result.response.outputSpeech.type == "PlainText") {
+        var responseText = result.response.outputSpeech.text;
+        var expectedOutputFound = responseText.startsWith(responseStart);
+    
+        if (expectedOutputFound) {
+            done();
+        } else {
+            done("ERROR: Unexpected text: " + result.response.outputSpeech.text);
+        }
+    } else if (result.response.outputSpeech.type == "SSML") {
+        var responseText = result.response.outputSpeech.ssml;
+        var expectedOutputFound = responseText.startsWith(responseStart);
+    
+        if (expectedOutputFound) {
+            done();
+        } else {
+            done("ERROR: Unexpected SSML: " + result.response.outputSpeech.ssml);
+        }
     }
 };
 

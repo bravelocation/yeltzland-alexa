@@ -8,5 +8,18 @@ describe('Intent Tests', function() {
     it('Result Intent should return something', function(done) {
         var teamSlot = { "Team": {"value":"Stourbridge"}};
         testHarness.makeLocalSkillRequest("ResultIntent", teamSlot, "We played Stourbridge ", done);
+    });    
+    it('Best Team Intent works as expected', function(done) {
+        testHarness.makeLocalSkillRequest("BestTeamIntent", null, "<speak><p><emphasis level=\"strong\">Halesowen Town</emphasis></p>", done);
+    });    
+    it('Worst Team Intent works as expected', function(done) {
+        testHarness.makeLocalSkillRequest("WorstTeamIntent", null, "<speak>The worst team are Stour <say-as interpret-as=\"expletive\">bridge</say-as> Town</speak>", done);
+    });
+    it('GameTimeIntent when no games on that day', function(done) {
+        var dateSlot = { "date": {"value":"2010-01-01"}};
+        testHarness.makeLocalSkillRequest("GameTimeIntent", dateSlot, "No games found on that day", done);
+    });
+    it('Game Score Intent works as expected', function(done) {
+        testHarness.makeLocalSkillRequest("GameScoreIntent", null, "The latest score is ", done);
     });
 });
