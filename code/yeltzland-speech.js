@@ -11,7 +11,7 @@ yeltzlandSpeech.teamBased = function(useFixtures, team, callback) {
     let speechOutput = "";
     let repromptText = null;
 
-    getJSON("https://bravelocation.com/automation/feeds/matches.json", function(err, data) {
+    getMatchesData(function(err, data) {
         if (err != null) {
             speechOutput = "I'm sorry I couldn't find that out right now";
             repromptText = "Please try again later";
@@ -61,7 +61,7 @@ yeltzlandSpeech.timeBased = function(timeStart, timeEnd, callback) {
     let speechOutput = "";
     let repromptText = null;
 
-    getJSON("https://bravelocation.com/automation/feeds/matches.json", function(err, data) {
+    getMatchesData(function(err, data) {
         if (err != null) {
             speechOutput = "I'm sorry I couldn't find that out right now";
             repromptText = "Please try again later";
@@ -100,7 +100,7 @@ yeltzlandSpeech.singleGame = function(useFixtures, callback) {
     let speechOutput = "";
     let repromptText = null;
 
-    getJSON("https://bravelocation.com/automation/feeds/matches.json", function(err, data) {
+    getMatchesData(function(err, data) {
         if (err != null) {
             speechOutput = "I'm sorry I couldn't find that out right now";
             repromptText = "Please try again later";
@@ -157,7 +157,7 @@ yeltzlandSpeech.gameScore = function(callback) {
     let speechOutput = "";
     let repromptText = null;
 
-    getJSON("https://bravelocation.com/automation/feeds/gamescore.json", function(err, data) {
+    getGameScoreData(function(err, data) {
         if (err != null) {
             speechOutput = "I'm sorry I couldn't find that out right now";
             repromptText = "Please try again later";
@@ -184,24 +184,6 @@ yeltzlandSpeech.gameScore = function(callback) {
         callback(result);
     });    
 }
-
-
-/**
- *  Data functions
- */
-
-var getJSON = function(url, callback) {
-    request({
-    url: url,
-    json: true
-        }, function (error, response, body) {
-            if (!error && response.statusCode === 200) {
-                callback(null, body);
-            } else {
-                callback(error, null);
-            }
-        })
-};
 
 /*
 * Helper functions
@@ -276,6 +258,28 @@ function parseDate(dateString) {
     
     return new Date(dayParts[0],dayParts[1] - 1,dayParts[2],timeParts[0],timeParts[1],timeParts[2]);
 }
+
+/* Data functions */
+function getMatchesData(callback) {
+    getJSON("https://bravelocation.com/automation/feeds/matches.json", callback);
+}
+
+function getGameScoreData(callback) {
+    getJSON("https://bravelocation.com/automation/feeds/gamescore.json", callback);
+}
+
+var getJSON = function(url, callback) {
+    request({
+    url: url,
+    json: true
+        }, function (error, response, body) {
+            if (!error && response.statusCode === 200) {
+                callback(null, body);
+            } else {
+                callback(error, null);
+            }
+        })
+};
 
 /* Export main object */
 exports.yeltzlandSpeech = yeltzlandSpeech;
