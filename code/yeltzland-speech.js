@@ -268,7 +268,7 @@ function getGameScoreData(callback) {
     getJSON("https://bravelocation.com/automation/feeds/gamescore.json", callback);
 }
 
-var getJSON = function(url, callback) {
+function getJSON(url, callback) {
     request({
     url: url,
     json: true
