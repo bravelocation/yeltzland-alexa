@@ -22,4 +22,7 @@ describe('Intent Tests', function() {
     it('Game Score Intent works as expected', function(done) {
         testHarness.makeLocalSkillRequest("GameScoreIntent", null, "The latest score is ", done);
     });
+    it('AMAZON.HelpIntent Intent works as expected', function(done) {
+        testHarness.makeLocalSkillRequest("AMAZON.HelpIntent", null, "Welcome to Yeltzland. What do you want to know about the mighty Yeltz?", done);
+    });
 });
