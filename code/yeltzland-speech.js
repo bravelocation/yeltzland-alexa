@@ -3,13 +3,19 @@ var request = require("request");
 var dateFormat = require('dateformat');
 
 var yeltzlandSpeech = {};
-yeltzlandSpeech.welcomeText = 'Welcome to Yeltzland. What do you want to know about the mighty Yeltz?';
-yeltzlandSpeech.finishText = 'Thanks for coming';
+yeltzlandSpeech.welcomeText = 'Thanks for coming! What do you want to know about Halesowen Town?';
+yeltzlandSpeech.finishText = 'Laters';
+yeltzlandSpeech.fallbackText = "I didn't catch that. Can you ask me something else?";
+yeltzlandSpeech.bestTeamText = 'The best team is Halesowen Town';
+yeltzlandSpeech.worstTeamText = 'The worst team are Stourbridge Town';
+yeltzlandSpeech.bestTeamSpeak = '<speak><p><emphasis level="strong">Halesowen Town</emphasis></p><p><emphasis level="strong">Halesowen Town F C</emphasis></p><p><emphasis level="strong">They\'re by far the greatest team</emphasis></p><p><emphasis level="strong">The world has ever seen</emphasis></p></speak>';
+yeltzlandSpeech.worstTeamSpeak = '<speak>The worst team are Stour <say-as interpret-as="expletive">bridge</say-as> Town</speak>'
 
 yeltzlandSpeech.teamBased = function(useFixtures, team, callback) {
 
     let speechOutput = "";
     let repromptText = null;
+    let matches = [];
 
     getMatchesData(function(err, data) {
         if (err != null) {
@@ -37,19 +43,22 @@ yeltzlandSpeech.teamBased = function(useFixtures, team, callback) {
                     speechOutput = "No more fixtures found against " + team;
                 } else {
                     speechOutput = matchesToSpeech(fixtures);
+                    matches = fixtures;
                 }
             } else {
                 if (results.length == 0) {
                     speechOutput = "No results found against " + team;
                 } else {
                     speechOutput = matchesToSpeech(results);
+                    matches = results;
                 }
             }
         }
 
         var result = {
             speechOutput: speechOutput,
-            repromptText: repromptText 
+            repromptText: repromptText,
+            matches: matches
         }
 
         callback(result);
@@ -60,14 +69,13 @@ yeltzlandSpeech.teamBased = function(useFixtures, team, callback) {
 yeltzlandSpeech.timeBased = function(timeStart, timeEnd, callback) {
     let speechOutput = "";
     let repromptText = null;
+    let matches = [];
 
     getMatchesData(function(err, data) {
         if (err != null) {
             speechOutput = "I'm sorry I couldn't find that out right now";
             repromptText = "Please try again later";
         } else {
-            var matches = [];
-
             // Go through each of the matches
             for (var i = 0; i < data.Matches.length; i++) {
                 var match = data.Matches[i];      
@@ -88,7 +96,8 @@ yeltzlandSpeech.timeBased = function(timeStart, timeEnd, callback) {
 
         var result = {
             speechOutput: speechOutput,
-            repromptText: repromptText 
+            repromptText: repromptText,
+            matches: matches 
         }
 
         callback(result);
@@ -96,7 +105,7 @@ yeltzlandSpeech.timeBased = function(timeStart, timeEnd, callback) {
 };
 
 yeltzlandSpeech.singleGame = function(useFixtures, callback) {
-    let cardTitle = "";
+    let cardTitle = "No games found";
     let speechOutput = "";
     let repromptText = null;
 
@@ -125,18 +134,18 @@ yeltzlandSpeech.singleGame = function(useFixtures, callback) {
             var matches = [];
 
             if (useFixtures) {
-                cardTitle = "Next game";
                 if (nextGame == null) {
                     speechOutput = "No more fixtures found";
                 } else {
+                    cardTitle = matchToTitle(nextGame)
                     matches.push(nextGame);
                     speechOutput = matchesToSpeech(matches);
                 }
             } else {
-                cardTitle = "Last game";
                 if (lastGame == null) {
                     speechOutput = "No more games found";
                 } else {
+                    cardTitle = matchToTitle(lastGame)
                     matches.push(lastGame);
                     speechOutput = matchesToSpeech(matches);
                 }
@@ -156,6 +165,7 @@ yeltzlandSpeech.singleGame = function(useFixtures, callback) {
 yeltzlandSpeech.gameScore = function(callback) {
     let speechOutput = "";
     let repromptText = null;
+    let cardTitle = "Latest score";
 
     getGameScoreData(function(err, data) {
         if (err != null) {
@@ -174,15 +184,28 @@ yeltzlandSpeech.gameScore = function(callback) {
             } else {
                 speechOutput += opponent + " " + opponentScore + ", Halesowen Town " + yeltzScore;               
             }
+
+            var generatedMatch = {
+                Opponent: data.match.Opponent,
+                Home: data.match.Home,
+                TeamScore: data.yeltzScore,
+                OpponentScore: data.opponentScore
+            }
+            cardTitle = matchToTitle(generatedMatch);
         }
 
         var result = {
             speechOutput: speechOutput,
-            repromptText: repromptText 
+            repromptText: repromptText,
+            cardTitle: cardTitle
         }
 
         callback(result);
     });    
+}
+
+yeltzlandSpeech.displayDate = function(matchDateString) {
+    return dateFormat(parseDate(matchDateString), "mmmm dS HH:MM");
 }
 
 /*
@@ -221,6 +244,48 @@ function matchesToSpeech(matches) {
     }  
 
     return output;
+}
+
+function matchToTitle(match) {
+    var output = "";
+    var fixture = (match.TeamScore == null) || (match.OpponentScore == null);  
+    var yeltzAtHome = (match.Home == "1");
+    
+    if (yeltzAtHome) {
+        output += "Yeltz"; 
+    } else {
+        output += match.Opponent;
+    }
+
+    if (fixture) {
+        output += " v ";  
+    } else {
+        output += " ";  
+        if (yeltzAtHome) {
+            output += match.TeamScore; 
+        } else {
+            output += match.OpponentScore;
+        }
+        output += " ";          
+    }
+
+    if (!yeltzAtHome) {
+        output += "Yeltz"; 
+    } else {
+        output += match.Opponent;
+    }
+
+    if (!fixture) {
+        output += " ";  
+        if (!yeltzAtHome) {
+            output += match.TeamScore; 
+        } else {
+            output += match.OpponentScore;
+        }       
+    }
+        
+    return output;
+    
 }
 
 function speakScore(score) {

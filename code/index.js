@@ -206,11 +206,11 @@ function timeBasedData(intent, session, callback) {
 }
 
 function bestTeam(intent, session, callback) {
-    callback({}, buildSpeechletMarkupResponse("Who's the best team?", '<speak><p><emphasis level="strong">Halesowen Town</emphasis></p><p><emphasis level="strong">Halesowen Town F C</emphasis></p><p><emphasis level="strong">They\'re by far the greatest team</emphasis></p><p><emphasis level="strong">The world has ever seen</emphasis></p></speak>', "The best team are Halesowen Town", true));
+    callback({}, buildSpeechletMarkupResponse("Who's the best team?", yeltzlandSpeech.bestTeamSpeak, "The best team are Halesowen Town", true));
 }
 
 function worstTeam(intent, session, callback) {
-    callback({}, buildSpeechletMarkupResponse("Who's the worst team?", '<speak>The worst team are Stour <say-as interpret-as="expletive">bridge</say-as> Town</speak>', "The worst team are Stourbridge Town", true));
+    callback({}, buildSpeechletMarkupResponse("Who's the worst team?", yeltzlandSpeech.worstTeamSpeak, "The worst team are Stourbridge Town", true));
 }
 
 function singleGame(intent, session, callback) {
