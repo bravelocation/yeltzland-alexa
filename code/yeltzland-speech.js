@@ -4,7 +4,7 @@ var dateFormat = require('dateformat');
 
 var yeltzlandSpeech = {};
 yeltzlandSpeech.welcomeText = 'Thanks for coming! What do you want to know about Halesowen Town?';
-yeltzlandSpeech.finishText = 'Laters';
+yeltzlandSpeech.finishText = 'See you later!';
 yeltzlandSpeech.fallbackText = "I didn't catch that. Can you ask me something else?";
 yeltzlandSpeech.bestTeamText = 'The best team is Halesowen Town';
 yeltzlandSpeech.worstTeamText = 'The worst team are Stourbridge Town';

@@ -15,7 +15,7 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
             title: `Yeltzland - ${title}`,
             text: `${output}`,
             image: {
-                "smallImageUrl": "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_large.png",
+                "smallImageUrl": "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_small.png",
                 "largeImageUrl": "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_large.png"
             }
         },
@@ -38,7 +38,11 @@ function buildSpeechletMarkupResponse(title, outputMarkup, cardContent, shouldEn
         card: {
             type: 'Simple',
             title: `Yeltzland - ${title}`,
-            content: `${cardContent}`,
+            text: `${cardContent}`,
+            image: {
+                "smallImageUrl": "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_small.png",
+                "largeImageUrl": "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_large.png"
+            }
         },
         reprompt: {
             outputSpeech: {
