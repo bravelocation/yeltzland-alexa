@@ -3,7 +3,7 @@ var request = require("request");
 var dateFormat = require('dateformat');
 
 var yeltzlandSpeech = {};
-yeltzlandSpeech.welcomeText = 'Thanks for coming! What do you want to know about Halesowen Town?';
+yeltzlandSpeech.welcomeText = 'Thanks for coming! Ask me about results, fixtures or the latest score for Halesowen Town.';
 yeltzlandSpeech.finishText = 'See you later!';
 yeltzlandSpeech.fallbackText = "I didn't catch that. Can you ask me something else?";
 yeltzlandSpeech.bestTeamText = 'The best team is Halesowen Town';
