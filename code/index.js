@@ -195,7 +195,7 @@ function teamBasedData(intent, session, callback) {
         team = teamSlot.value;
     }
 
-    const cardTitle = "Halesowen games against " + team;
+    const cardTitle = "Halesowen games against " + yeltzlandSpeech.titleCase(team);
 
     var useFixtures = (intent.name == "FixtureIntent");
     yeltzlandSpeech.teamBased(useFixtures, team, function(result) {

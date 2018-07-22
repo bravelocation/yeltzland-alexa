@@ -219,6 +219,12 @@ yeltzlandSpeech.teamImageUrl = function(teamName) {
     return "https://bravelocation.com/teamlogos/" + teamName.replace(' ', '_').toLowerCase() + ".png";
 }
 
+yeltzlandSpeech.titleCase = function(teamName) {
+    return teamName.toLowerCase().split(' ').map(function(word) {
+        return word.replace(word[0], word[0].toUpperCase());
+     }).join(' ');
+}
+
 /*
 * Helper functions
 */
