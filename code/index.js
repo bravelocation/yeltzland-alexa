@@ -4,7 +4,16 @@ var yeltzlandSpeech = require("./yeltzland-speech").yeltzlandSpeech;
 
 // --------------- Helpers that build all of the responses -----------------------
 
-function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
+function buildSpeechletResponse(title, output, repromptText, shouldEndSession, teamName) {
+
+    var imageSmallUrl = "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_small.png";
+    var imageLargeUrl = "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_large.png";
+
+    if (teamName) {
+        imageSmallUrl = yeltzlandSpeech.teamImageUrl(teamName);
+        imageLargeUrl = yeltzlandSpeech.teamImageUrl(teamName);
+    }
+
     return {
         outputSpeech: {
             type: 'PlainText',
@@ -15,8 +24,8 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
             title: title,
             text: output,
             image: {
-                "smallImageUrl": "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_small.png",
-                "largeImageUrl": "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_large.png"
+                "smallImageUrl": imageSmallUrl,
+                "largeImageUrl": imageLargeUrl
             }
         },
         reprompt: {
@@ -29,7 +38,15 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     };
 }
 
-function buildSpeechletMarkupResponse(title, outputMarkup, cardContent, shouldEndSession) {
+function buildSpeechletMarkupResponse(title, outputMarkup, cardContent, shouldEndSession, teamName) {
+    var imageSmallUrl = "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_small.png";
+    var imageLargeUrl = "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_large.png";
+
+    if (teamName) {
+        imageSmallUrl = yeltzlandSpeech.teamImageUrl(teamName);
+        imageLargeUrl = yeltzlandSpeech.teamImageUrl(teamName);
+    }
+    
     return {
         outputSpeech: {
             type: 'SSML',
@@ -40,8 +57,8 @@ function buildSpeechletMarkupResponse(title, outputMarkup, cardContent, shouldEn
             title: title,
             text: cardContent,
             image: {
-                "smallImageUrl": "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_small.png",
-                "largeImageUrl": "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_large.png"
+                "smallImageUrl": imageSmallUrl,
+                "largeImageUrl": imageLargeUrl
             }
         },
         reprompt: {
@@ -61,7 +78,6 @@ function buildResponse(sessionAttributes, speechletResponse) {
         response: speechletResponse,
     };
 }
-
 
 // --------------- Events -----------------------
 
@@ -183,7 +199,7 @@ function teamBasedData(intent, session, callback) {
 
     var useFixtures = (intent.name == "FixtureIntent");
     yeltzlandSpeech.teamBased(useFixtures, team, function(result) {
-        callback({}, buildSpeechletResponse(cardTitle, result.speechOutput, result.repromptText, true));
+        callback({}, buildSpeechletResponse(cardTitle, result.speechOutput, result.repromptText, true, team));
     });
 }
 
@@ -214,7 +230,7 @@ function bestTeam(intent, session, callback) {
 }
 
 function worstTeam(intent, session, callback) {
-    callback({}, buildSpeechletMarkupResponse("Who's the worst team?", yeltzlandSpeech.worstTeamSpeak, "The worst team are Stourbridge Town", true));
+    callback({}, buildSpeechletMarkupResponse("Who's the worst team?", yeltzlandSpeech.worstTeamSpeak, "The worst team are Stourbridge Town", true, "Stourbridge"));
 }
 
 function singleGame(intent, session, callback) {

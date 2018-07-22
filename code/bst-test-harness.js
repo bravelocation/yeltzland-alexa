@@ -6,10 +6,10 @@ var request = require("request");
 
     @intentName: Name of the intent we are querying against
     @slots: Slots to use in the intent. Can be null or formatted like { "Team": {"value":"Stourbridge"}}
-    @responseStart: The text the text response will start with
+    @responseStart: The text the text response will start with (or team name for imageTests)
     @done: Mocha function to denote pass or failure of the test
 */
-var makeLocalSkillRequest = function(intentName, slots, responseStart, done) {
+var makeLocalSkillRequest = function(intentName, slots, responseStart, done, imageTest) {
     // Build the Alexa Skill payload for the request
     var payload = {
         "session": {
@@ -37,10 +37,18 @@ var makeLocalSkillRequest = function(intentName, slots, responseStart, done) {
                     }
                 }, 
         function (error, response, body) {
-            if (!error && response.statusCode === 200) {
-                testResultHandler(null, body, responseStart, done);
+            if (imageTest) {
+                if (!error && response.statusCode === 200) {
+                    imageTestResultHandler(null, body, responseStart, done);
+                } else {
+                    imageTestResultHandler(error, null, responseStart, done);
+                }
             } else {
-                testResultHandler(error, null, responseStart, done);
+                if (!error && response.statusCode === 200) {
+                    testResultHandler(null, body, responseStart, done);
+                } else {
+                    testResultHandler(error, null, responseStart, done);
+                }               
             }
         });
 }
@@ -76,4 +84,23 @@ var testResultHandler = function(err, response, responseStart, done) {
     }
 };
 
+var imageTestResultHandler = function(err, response, smallImageUrl, done) {
+    // If the requested errored, we're done
+    if (err) {
+        done(err);
+        return;
+    } 
+    
+    // Check the response starts with the given text
+    var result = JSON.parse(response);
+
+    var responseSmallImage = result.response.card.image.smallImageUrl;
+    var expectedOutputFound = responseSmallImage == smallImageUrl;
+    
+    if (expectedOutputFound) {
+        done();
+    } else {
+        done("ERROR: Unexpected image: " + responseSmallImage);
+    }
+};
 exports.makeLocalSkillRequest = makeLocalSkillRequest;

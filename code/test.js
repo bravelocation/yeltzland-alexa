@@ -25,4 +25,11 @@ describe('Intent Tests', function() {
     it('AMAZON.HelpIntent Intent works as expected', function(done) {
         testHarness.makeLocalSkillRequest("AMAZON.HelpIntent", null, "Thanks for coming!", done);
     });
+    it('Result Intent should return team image', function(done) {
+        var teamSlot = { "Team": {"value":"Romulus"}};
+        testHarness.makeLocalSkillRequest("ResultIntent", teamSlot, "https://bravelocation.com/teamlogos/romulus.png", done, true);
+    });  
+    it('Worst Team Intent returns correct image', function(done) {
+        testHarness.makeLocalSkillRequest("WorstTeamIntent", null, "https://bravelocation.com/teamlogos/stourbridge.png", done, true);
+    });
 });

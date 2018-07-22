@@ -108,6 +108,7 @@ yeltzlandSpeech.singleGame = function(useFixtures, callback) {
     let cardTitle = "No games found";
     let speechOutput = "";
     let repromptText = null;
+    let team = null;
 
     getMatchesData(function(err, data) {
         if (err != null) {
@@ -140,6 +141,7 @@ yeltzlandSpeech.singleGame = function(useFixtures, callback) {
                     cardTitle = matchToTitle(nextGame)
                     matches.push(nextGame);
                     speechOutput = matchesToSpeech(matches);
+                    team = nextGame.Opponent
                 }
             } else {
                 if (lastGame == null) {
@@ -148,6 +150,7 @@ yeltzlandSpeech.singleGame = function(useFixtures, callback) {
                     cardTitle = matchToTitle(lastGame)
                     matches.push(lastGame);
                     speechOutput = matchesToSpeech(matches);
+                    team = lastGame.Opponent;
                 }
             }
         }
@@ -155,7 +158,8 @@ yeltzlandSpeech.singleGame = function(useFixtures, callback) {
         var result = {
             speechOutput: speechOutput,
             repromptText: repromptText,
-            cardTitle: cardTitle
+            cardTitle: cardTitle,
+            team: team
         }
 
         callback(result);
@@ -166,6 +170,7 @@ yeltzlandSpeech.gameScore = function(callback) {
     let speechOutput = "";
     let repromptText = null;
     let cardTitle = "Latest score";
+    let team = null;
 
     getGameScoreData(function(err, data) {
         if (err != null) {
@@ -192,12 +197,14 @@ yeltzlandSpeech.gameScore = function(callback) {
                 OpponentScore: data.opponentScore
             }
             cardTitle = matchToTitle(generatedMatch);
+            team = opponent;
         }
 
         var result = {
             speechOutput: speechOutput,
             repromptText: repromptText,
-            cardTitle: cardTitle
+            cardTitle: cardTitle,
+            team: team
         }
 
         callback(result);
@@ -206,6 +213,10 @@ yeltzlandSpeech.gameScore = function(callback) {
 
 yeltzlandSpeech.displayDate = function(matchDateString) {
     return dateFormat(parseDate(matchDateString), "mmmm dS HH:MM");
+}
+
+yeltzlandSpeech.teamImageUrl = function(teamName) {
+    return "https://bravelocation.com/teamlogos/" + teamName.replace(' ', '_').toLowerCase() + ".png";
 }
 
 /*
