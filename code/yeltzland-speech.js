@@ -9,7 +9,7 @@ yeltzlandSpeech.fallbackText = "I didn't catch that. Can you ask me something el
 yeltzlandSpeech.bestTeamText = 'The best team is Halesowen Town';
 yeltzlandSpeech.worstTeamText = 'The worst team are Stourbridge Town';
 yeltzlandSpeech.bestTeamSpeak = '<speak><p><emphasis level="strong">Halesowen Town</emphasis></p><p><emphasis level="strong">Halesowen Town F C</emphasis></p><p><emphasis level="strong">They\'re by far the greatest team</emphasis></p><p><emphasis level="strong">The world has ever seen</emphasis></p></speak>';
-yeltzlandSpeech.worstTeamSpeak = '<speak>The worst team are Stour <say-as interpret-as="expletive">bridge</say-as> Town</speak>'
+yeltzlandSpeech.worstTeamSpeak = '<speak>The worst team are Stour <say-as interpret-as="expletive">bridge</say-as> Town</speak>';
 
 yeltzlandSpeech.teamBased = function(useFixtures, team, callback) {
 
@@ -173,6 +173,8 @@ yeltzlandSpeech.gameScore = function(callback) {
     let team = null;
 
     getGameScoreData(function(err, data) {
+        var matches = [];
+
         if (err != null) {
             speechOutput = "I'm sorry I couldn't find that out right now";
             repromptText = "Please try again later";
@@ -197,6 +199,7 @@ yeltzlandSpeech.gameScore = function(callback) {
                 OpponentScore: data.opponentScore
             }
             cardTitle = matchToTitle(generatedMatch);
+            matches.push(generatedMatch);
             team = opponent;
         }
 
@@ -204,6 +207,7 @@ yeltzlandSpeech.gameScore = function(callback) {
             speechOutput: speechOutput,
             repromptText: repromptText,
             cardTitle: cardTitle,
+            matches: matches,
             team: team
         }
 
