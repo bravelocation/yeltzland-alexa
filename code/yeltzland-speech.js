@@ -109,6 +109,7 @@ yeltzlandSpeech.singleGame = function(useFixtures, callback) {
     let speechOutput = "";
     let repromptText = null;
     let team = null;
+    let matches = [];
 
     getMatchesData(function(err, data) {
         if (err != null) {
@@ -131,8 +132,6 @@ yeltzlandSpeech.singleGame = function(useFixtures, callback) {
                     lastGame = match;
                 }  
             }          
-
-            var matches = [];
 
             if (useFixtures) {
                 if (nextGame == null) {
@@ -159,6 +158,7 @@ yeltzlandSpeech.singleGame = function(useFixtures, callback) {
             speechOutput: speechOutput,
             repromptText: repromptText,
             cardTitle: cardTitle,
+            matches: matches,
             team: team
         }
 
@@ -213,21 +213,21 @@ yeltzlandSpeech.gameScore = function(callback) {
 
         callback(result);
     });    
-}
+};
 
 yeltzlandSpeech.displayDate = function(matchDateString) {
     return dateFormat(parseDate(matchDateString), "mmmm dS HH:MM");
-}
+};
 
 yeltzlandSpeech.teamImageUrl = function(teamName) {
     return "https://bravelocation.com/teamlogos/" + teamName.replace(' ', '_').toLowerCase() + ".png";
-}
+};
 
 yeltzlandSpeech.titleCase = function(teamName) {
     return teamName.toLowerCase().split(' ').map(function(word) {
         return word.replace(word[0], word[0].toUpperCase());
      }).join(' ');
-}
+};
 
 /*
 * Helper functions
@@ -265,7 +265,7 @@ function matchesToSpeech(matches) {
     }  
 
     return output;
-}
+};
 
 function matchToTitle(match) {
     var output = "";
@@ -307,7 +307,7 @@ function matchToTitle(match) {
         
     return output;
     
-}
+};
 
 function speakScore(score) {
     if (score == 0) {
@@ -315,11 +315,11 @@ function speakScore(score) {
     }
 
     return score.toString();
-}
+};
 
 function speakDate(dateString) {
     return dateFormat(parseDate(dateString), "dddd, mmmm dS, yyyy");
-}
+};
 
 function speakTime(dateString) {
     var parsedDate = parseDate(dateString);
@@ -335,7 +335,7 @@ function speakTime(dateString) {
     } else {
         return hours.toString() + " " + minutes.toString();        
     }
-}
+};
 
 function parseDate(dateString) {
     var dateStringParts = dateString.split(' ');
@@ -343,16 +343,16 @@ function parseDate(dateString) {
     var timeParts = dateStringParts[1].split(':');
     
     return new Date(dayParts[0],dayParts[1] - 1,dayParts[2],timeParts[0],timeParts[1],timeParts[2]);
-}
+};
 
 /* Data functions */
 function getMatchesData(callback) {
     getJSON("https://bravelocation.com/automation/feeds/matches.json", callback);
-}
+};
 
 function getGameScoreData(callback) {
     getJSON("https://bravelocation.com/automation/feeds/gamescore.json", callback);
-}
+};
 
 function getJSON(url, callback) {
     request({
