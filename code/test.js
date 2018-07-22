@@ -6,8 +6,8 @@ describe('Intent Tests', function() {
         testHarness.makeLocalSkillRequest("LastResultIntent", null, "We played ", done);
     });
     it('Result Intent should return something', function(done) {
-        var teamSlot = { "Team": {"value":"Stourbridge"}};
-        testHarness.makeLocalSkillRequest("ResultIntent", teamSlot, "We played Stourbridge ", done);
+        var teamSlot = { "Team": {"value":"Romulus"}};
+        testHarness.makeLocalSkillRequest("ResultIntent", teamSlot, "We played Romulus", done);
     });    
     it('Best Team Intent works as expected', function(done) {
         testHarness.makeLocalSkillRequest("BestTeamIntent", null, "<speak><p><emphasis level=\"strong\">Halesowen Town</emphasis></p>", done);
