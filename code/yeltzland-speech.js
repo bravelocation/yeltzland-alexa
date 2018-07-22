@@ -185,9 +185,9 @@ yeltzlandSpeech.gameScore = function(callback) {
             speechOutput = "The latest score is ";
 
             if (home) {
-                speechOutput += "Halesowen Town " + yeltzScore + ", " + opponent + " " + opponentScore;
+                speechOutput += "Halesowen Town " + speakScore(yeltzScore) + ", " + opponent + " " + speakScore(opponentScore);
             } else {
-                speechOutput += opponent + " " + opponentScore + ", Halesowen Town " + yeltzScore;               
+                speechOutput += opponent + " " + speakScore(opponentScore) + ", Halesowen Town " + speakScore(yeltzScore);               
             }
 
             var generatedMatch = {
