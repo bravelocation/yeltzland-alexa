@@ -5,6 +5,10 @@ describe('Intent Tests', function() {
     it('Last Result Intent should return something', function(done) {
         testHarness.makeLocalSkillRequest("LastResultIntent", null, "We played ", done);
     });
+    it('Fixture Intent should return something', function(done) {
+        var teamSlot = { "Team": {"value":"Tamworth"}};
+        testHarness.makeLocalSkillRequest("FixtureIntent", teamSlot, "We will play Tamworth", done);
+    }); 
     it('Result Intent should return something', function(done) {
         var teamSlot = { "Team": {"value":"Romulus"}};
         testHarness.makeLocalSkillRequest("ResultIntent", teamSlot, "We played Romulus", done);
@@ -25,6 +29,7 @@ describe('Intent Tests', function() {
     it('AMAZON.HelpIntent Intent works as expected', function(done) {
         testHarness.makeLocalSkillRequest("AMAZON.HelpIntent", null, "Thanks for coming!", done);
     });
+
     it('Result Intent should return team image', function(done) {
         var teamSlot = { "Team": {"value":"Romulus"}};
         testHarness.makeLocalSkillRequest("ResultIntent", teamSlot, "https://bravelocation.com/teamlogos/romulus.png", done, true);

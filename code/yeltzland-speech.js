@@ -29,7 +29,7 @@ yeltzlandSpeech.teamBased = function(useFixtures, team, callback) {
             for (var i = 0; i < data.Matches.length; i++) {
                 var match = data.Matches[i];      
                 
-                if (match.Opponent == team) {
+                if (match.Opponent.toLowerCase() == team.toLowerCase()) {
                     if ((match.TeamScore == null) || (match.OpponentScore == null)) {
                         fixtures.push(match);
                     } else {
