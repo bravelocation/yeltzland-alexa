@@ -3,8 +3,8 @@ var request = require("request");
 var dateFormat = require('dateformat');
 
 var yeltzlandSpeech = {};
-yeltzlandSpeech.welcomeText = 'Thanks for coming! Ask me about results, fixtures or the latest score for Halesowen Town.';
-yeltzlandSpeech.finishText = 'See you later!';
+yeltzlandSpeech.welcomeText = 'Ask about results, fixtures or the latest score.';
+yeltzlandSpeech.finishText = 'Thanks for coming!';
 yeltzlandSpeech.fallbackText = "I didn't catch that. Can you ask me something else?";
 yeltzlandSpeech.bestTeamText = 'The best team is Halesowen Town';
 yeltzlandSpeech.worstTeamText = 'The worst team are Stourbridge Town';
@@ -29,7 +29,7 @@ yeltzlandSpeech.teamBased = function(useFixtures, team, callback) {
             for (var i = 0; i < data.Matches.length; i++) {
                 var match = data.Matches[i];      
                 
-                if (match.Opponent.toLowerCase() == team.toLowerCase()) {
+                if (teamToSpeech(match.Opponent).toLowerCase() == team.toLowerCase()) {
                     if ((match.TeamScore == null) || (match.OpponentScore == null)) {
                         fixtures.push(match);
                     } else {
@@ -187,9 +187,9 @@ yeltzlandSpeech.gameScore = function(callback) {
             speechOutput = "The latest score is ";
 
             if (home) {
-                speechOutput += "Halesowen Town " + speakScore(yeltzScore) + ", " + opponent + " " + speakScore(opponentScore);
+                speechOutput += "Halesowen Town " + speakScore(yeltzScore) + ", " + teamToSpeech(opponent) + " " + speakScore(opponentScore);
             } else {
-                speechOutput += opponent + " " + speakScore(opponentScore) + ", Halesowen Town " + speakScore(yeltzScore);               
+                speechOutput += teamToSpeech(opponent) + " " + speakScore(opponentScore) + ", Halesowen Town " + speakScore(yeltzScore);               
             }
 
             var generatedMatch = {
@@ -216,11 +216,11 @@ yeltzlandSpeech.gameScore = function(callback) {
 };
 
 yeltzlandSpeech.displayDate = function(matchDateString) {
-    return dateFormat(parseDate(matchDateString), "mmmm dS HH:MM");
+    return dateFormat(parseDate(matchDateString), "ddd mmm dd HH:MM");
 };
 
 yeltzlandSpeech.teamImageUrl = function(teamName) {
-    return "https://bravelocation.com/teamlogos/" + teamName.replace(' ', '_').toLowerCase() + ".png";
+    return "https://bravelocation.com/teamlogos/" + teamToSpeech(teamName).replace(' ', '_').toLowerCase() + ".png";
 };
 
 yeltzlandSpeech.titleCase = function(teamName) {
@@ -232,6 +232,18 @@ yeltzlandSpeech.titleCase = function(teamName) {
 /*
 * Helper functions
 */
+
+
+function teamToSpeech(teamName) {
+    var startBracket = teamName.indexOf(" (");
+
+    if (startBracket > 0) {
+        return teamName.substring(0, startBracket)
+    }
+
+    return teamName;
+};
+
 function matchesToSpeech(matches) {
     var output = "";
 
@@ -246,7 +258,7 @@ function matchesToSpeech(matches) {
             output += (i > 0 ? "also " : "") + "played ";
         }
 
-        output += match.Opponent + (match.Home == "0" ? " away " : " at home ") + "on " + speakDate(match.MatchDateTime); 
+        output += teamToSpeech(match.Opponent) + (match.Home == "0" ? " away " : " at home ") + "on " + speakDate(match.MatchDateTime); 
 
         if (!fixture) {
             if (match.TeamScore > match.OpponentScore) {
