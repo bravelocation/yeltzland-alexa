@@ -22,6 +22,7 @@ yeltzlandSpeech.latestScoreTitle = "Latest score";
 
 yeltzlandSpeech.teamBased = async function(useFixtures, team) {
     let speechOutput = "";
+    let textOutput = "";
     let repromptText = null;
     let matches = [];
 
@@ -29,7 +30,8 @@ yeltzlandSpeech.teamBased = async function(useFixtures, team) {
 
     if (data == null) {
         speechOutput = "I'm sorry I couldn't find that out right now";
-        repromptText = "Please try again later";        
+        repromptText = "Please try again later";  
+        textOutput =  "I'm sorry I couldn't find that out right now";   
     } else {
         var fixtures = [];
         var results = [];
@@ -52,6 +54,7 @@ yeltzlandSpeech.teamBased = async function(useFixtures, team) {
                 speechOutput = "No more fixtures found against " + team;
             } else {
                 speechOutput = matchesToSpeech(fixtures);
+                textOutput = matchesToText(fixtures);
                 matches = fixtures;
             }
         } else {
@@ -59,6 +62,7 @@ yeltzlandSpeech.teamBased = async function(useFixtures, team) {
                 speechOutput = "No results found against " + team;
             } else {
                 speechOutput = matchesToSpeech(results);
+                textOutput = matchesToText(results);
                 matches = results;
             }
         }        
@@ -67,6 +71,7 @@ yeltzlandSpeech.teamBased = async function(useFixtures, team) {
     var result = {
         speechOutput: speechOutput,
         repromptText: repromptText,
+        textOutput: textOutput,
         matches: matches
     }
 
@@ -274,6 +279,42 @@ function matchesToSpeech(matches) {
                 output += ". We drew " + speakScore(match.TeamScore) + " " + speakScore(match.OpponentScore);
             } else {
                 output += ". We lost " + speakScore(match.OpponentScore) + " " + speakScore(match.TeamScore);
+            } 
+            
+        } else {
+            output += " at " + speakTime(match.MatchDateTime);
+        }  
+        
+        output += ". ";       
+    }  
+
+    return output;
+};
+
+
+function matchesToText(matches) {
+    var output = "";
+
+    for (var i = 0; i < matches.length; i++) {
+        var match = matches[i];
+        var fixture = (match.TeamScore == null) || (match.OpponentScore == null);  
+        
+        output += "We ";
+        if (fixture) {
+            output += "will " + (i > 0 ? "also " : "") + "play "
+        } else {
+            output += (i > 0 ? "also " : "") + "played ";
+        }
+
+        output += teamToSpeech(match.Opponent) + (match.Home == "0" ? " away " : " at home ") + "on " + speakDate(match.MatchDateTime); 
+
+        if (!fixture) {
+            if (match.TeamScore > match.OpponentScore) {
+                output += ". We won " + match.TeamScore + "-" + match.OpponentScore;
+            } else if (match.TeamScore == match.OpponentScore) {
+                output += ". We drew " + match.TeamScore + "-" + match.OpponentScore;
+            } else {
+                output += ". We lost " + match.OpponentScore + "-" + match.TeamScore;
             } 
             
         } else {

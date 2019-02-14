@@ -99,7 +99,7 @@ const TeamBasedIntentHandler = {
         const result = await yeltzlandSpeech.teamBased(useFixtures, team);
         const imageUrl = yeltzlandSpeech.teamImageUrl(team);
 
-        return helper.cardWithSpeechAndImages(handlerInput, cardTitle, result.speechOutput, imageUrl, imageUrl);
+        return helper.cardWithSpeechAndImages(handlerInput, cardTitle, result.speechOutput, result.textOutput, imageUrl, imageUrl);
     }
 };
 
