@@ -125,7 +125,7 @@ const TimeBasedIntentHandler = {
         } else {
             const result = await yeltzlandSpeech.timeBased(timeStart, timeEnd);
 
-            if (result.matches && result.matches.length < 0) {
+            if (result.matches && result.matches.length > 0) {
                 const imageUrl = yeltzlandSpeech.teamImageUrl(result.matches[0].Opponent);
                 return helper.cardWithSpeechAndImages(handlerInput, yeltzlandSpeech.halesowenGamesTitle, result.speechOutput, result.textOutput, imageUrl, imageUrl);
             }
@@ -145,7 +145,7 @@ const SingleGameIntentHandler = {
 
         const result = await yeltzlandSpeech.singleGame(useFixtures);
 
-        if (result.matches && result.matches.length < 0) {
+        if (result.matches && result.matches.length > 0) {
             const imageUrl = yeltzlandSpeech.teamImageUrl(result.matches[0].Opponent);
             return helper.cardWithSpeechAndImages(handlerInput, result.cardTitle, result.speechOutput, result.textOutput, imageUrl, imageUrl);
         }
@@ -162,7 +162,7 @@ const GameScoreIntentHandler = {
     async handle(handlerInput) {
         const result = await yeltzlandSpeech.gameScore();
 
-        if (result.matches && result.matches.length < 0) {
+        if (result.matches && result.matches.length > 0) {
             const imageUrl = yeltzlandSpeech.teamImageUrl(result.matches[0].Opponent);
             return helper.cardWithSpeechAndImages(handlerInput, yeltzlandSpeech.latestScoreTitle, result.speechOutput, result.textOutput, imageUrl, imageUrl);
         }
