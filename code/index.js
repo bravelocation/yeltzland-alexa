@@ -1,248 +1,182 @@
-'use strict';
-var AmazonDateParser = require('amazon-date-parser');
-var yeltzlandSpeech = require("./yeltzland-speech").yeltzlandSpeech;
-
-// --------------- Helpers that build all of the responses -----------------------
-
-function buildSpeechletResponse(title, output, repromptText, shouldEndSession, teamName) {
-
-    var imageSmallUrl = "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_small.png";
-    var imageLargeUrl = "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_large.png";
-
-    if (teamName) {
-        imageSmallUrl = yeltzlandSpeech.teamImageUrl(teamName);
-        imageLargeUrl = yeltzlandSpeech.teamImageUrl(teamName);
-    }
-
-    return {
-        outputSpeech: {
-            type: 'PlainText',
-            text: output,
-        },
-        card: {
-            type: 'Standard',
-            title: title,
-            text: output,
-            image: {
-                "smallImageUrl": imageSmallUrl,
-                "largeImageUrl": imageLargeUrl
-            }
-        },
-        reprompt: {
-            outputSpeech: {
-                type: 'PlainText',
-                text: repromptText,
-            },
-        },
-        shouldEndSession,
-    };
-}
-
-function buildSpeechletMarkupResponse(title, outputMarkup, cardContent, shouldEndSession, teamName) {
-    var imageSmallUrl = "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_small.png";
-    var imageLargeUrl = "https://s3-eu-west-1.amazonaws.com/yeltzland-alexa-images/htfc_logo_large.png";
-
-    if (teamName) {
-        imageSmallUrl = yeltzlandSpeech.teamImageUrl(teamName);
-        imageLargeUrl = yeltzlandSpeech.teamImageUrl(teamName);
-    }
-    
-    return {
-        outputSpeech: {
-            type: 'SSML',
-            ssml: outputMarkup,
-        },
-        card: {
-            type: 'Standard',
-            title: title,
-            text: cardContent,
-            image: {
-                "smallImageUrl": imageSmallUrl,
-                "largeImageUrl": imageLargeUrl
-            }
-        },
-        reprompt: {
-            outputSpeech: {
-                type: 'PlainText',
-                text: null,
-            },
-        },
-        shouldEndSession,
-    };
-}
-
-function buildResponse(sessionAttributes, speechletResponse) {
-    return {
-        version: '1.0',
-        sessionAttributes,
-        response: speechletResponse,
-    };
-}
-
-// --------------- Events -----------------------
-
-/**
- * Called when the session starts.
- */
-function onSessionStarted(sessionStartedRequest, session) {
-    console.log(`onSessionStarted requestId=${sessionStartedRequest.requestId}, sessionId=${session.sessionId}`);
-}
-
-/**
- * Called when the user launches the skill without specifying what they want.
- */
-function onLaunch(launchRequest, session, callback) {
-    console.log(`onLaunch requestId=${launchRequest.requestId}, sessionId=${session.sessionId}`);
-
-    // Dispatch to your skill's launch.
-    getWelcomeResponse(callback);
-}
-
-/**
- * Called when the user specifies an intent for this skill.
- */
-function onIntent(intentRequest, session, callback) {
-    console.log(`onIntent requestId=${intentRequest.requestId}, sessionId=${session.sessionId}`);
-
-    const intent = intentRequest.intent;
-    const intentName = intentRequest.intent.name;
-
-    // Dispatch to your skill's intent handlers
-    if (intentName === 'BestTeamIntent') {
-        bestTeam(intent, session, callback);
-    } else if (intentName === 'WorstTeamIntent') {
-        worstTeam(intent, session, callback);
-    } else if (intentName === 'FixtureIntent') {
-        teamBasedData(intent, session, callback);
-    } else if (intentName === 'ResultIntent') {
-        teamBasedData(intent, session, callback);
-    } else if (intentName === 'NextGameIntent') {
-        singleGame(intent, session, callback);
-    } else if (intentName === 'LastResultIntent') {
-        singleGame(intent, session, callback);
-    } else if (intentName === 'GameTimeIntent') {
-        timeBasedData(intent, session, callback);
-    } else if (intentName === 'GameScoreIntent') {
-        gameScore(intent, session, callback);
-    } else if (intentName === 'AMAZON.HelpIntent') {
-        getWelcomeResponse(callback);
-    } else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {
-        handleSessionEndRequest(callback);
-    } else {
-        throw new Error('Invalid intent');
-    }
-}
-
-/**
- * Called when the user ends the session.
- * Is not called when the skill returns shouldEndSession=true.
- */
-function onSessionEnded(sessionEndedRequest, session) {
-    console.log(`onSessionEnded requestId=${sessionEndedRequest.requestId}, sessionId=${session.sessionId}`);
-    // Add cleanup logic here
-}
+const Alexa = require('ask-sdk');
+const helper = require('./alexaHelper');
+const AmazonDateParser = require('amazon-date-parser');
+const yeltzlandSpeech = require("./yeltzland-speech").yeltzlandSpeech;
 
 
-// --------------- Main handler -----------------------
-
-// Route the incoming request based on type (LaunchRequest, IntentRequest,
-// etc.) The JSON body of the request is provided in the event parameter.
-exports.handler = (event, context, callback) => {
-    try {
-        console.log(`event.session.application.applicationId=${event.session.application.applicationId}`);
-
-        if (event.session.new) {
-            onSessionStarted({ requestId: event.request.requestId }, event.session);
-        }
-
-        if (event.request.type === 'LaunchRequest') {
-            onLaunch(event.request,
-                event.session,
-                (sessionAttributes, speechletResponse) => {
-                    callback(null, buildResponse(sessionAttributes, speechletResponse));
-                });
-        } else if (event.request.type === 'IntentRequest') {
-            onIntent(event.request,
-                event.session,
-                (sessionAttributes, speechletResponse) => {
-                    callback(null, buildResponse(sessionAttributes, speechletResponse));
-                });
-        } else if (event.request.type === 'SessionEndedRequest') {
-            onSessionEnded(event.request, event.session);
-            callback();
-        }
-    } catch (err) {
-        callback(err);
+/* Standard Helpers */
+const LaunchRequestHandler = {
+    canHandle(handlerInput) {
+      return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
+    },
+    handle(handlerInput) {
+        return helper.cardWithReprompt(handlerInput, 'Welcome', yeltzlandSpeech.welcomeText);
     }
 };
 
+const HelpIntentHandler = {
+  canHandle(handlerInput) {
+    return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+      && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
+  },
+  handle(handlerInput) {
+      return helper.card(handlerInput, 'Welcome', yeltzlandSpeech.welcomeText);
+  }
+};
 
-// ------ Intent functions -----
-
-function getWelcomeResponse(callback) {
-    callback({}, buildSpeechletResponse('Welcome', yeltzlandSpeech.welcomeText, null, false));
-}
-
-function handleSessionEndRequest(callback) {
-    callback({}, buildSpeechletResponse('Session Ended', yeltzlandSpeech.finishText, null, true));
-}
-
-function teamBasedData(intent, session, callback) {
-    // Pick up the team value from the slot
-    const teamSlot = intent.slots.Team;
-    var team = "";
-    if (teamSlot) {
-        team = teamSlot.value;
+const CancelAndStopIntentHandler = {
+    canHandle(handlerInput) {
+      return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+        && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent'
+          || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
+    },
+    handle(handlerInput) {
+        return helper.card(handlerInput, 'Thanks for coming', yeltzlandSpeech.finishText);
     }
+};
 
-    const cardTitle = "Halesowen games against " + yeltzlandSpeech.titleCase(team);
+const SessionEndedRequestHandler = {
+    canHandle(handlerInput) {
+      return handlerInput.requestEnvelope.request.type === 'SessionEndedRequest';
+    },
+    handle(handlerInput) {
+      //any cleanup logic goes here
+      return handlerInput.responseBuilder.getResponse();
+    }
+};
 
-    var useFixtures = (intent.name == "FixtureIntent");
-    yeltzlandSpeech.teamBased(useFixtures, team, function(result) {
-        callback({}, buildSpeechletResponse(cardTitle, result.speechOutput, result.repromptText, true, team));
-    });
-}
+const ErrorHandler = {
+    canHandle() {
+      return true;
+    },
+    handle(handlerInput, error) {
+        if (error) {
+            console.log(`Error handled: ${error.message}`);
+        }
+      
+        return helper.speakWithReprompt(handlerInput, 'Something went wrong');
+    },
+};
 
-function timeBasedData(intent, session, callback) {   
-    // Pick up the time start and end requested
-    var timeSlot = intent.slots.date.value;
-    var timeStart = null;
-    var timeEnd = null;
+/* App-specific helpers */
+const BestTeamIntentHandler = {
+    canHandle(handlerInput) {
+      return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+        && handlerInput.requestEnvelope.request.intent.name === 'BestTeamIntent';
+    },
+    handle(handlerInput) {
+        return helper.cardWithSpeech(handlerInput, "Who's the best team?", yeltzlandSpeech.bestTeamSpeak, "The best team are Halesowen Town");
+    }
+};
+
+const WorstTeamIntentHandler = {
+    canHandle(handlerInput) {
+      return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+        && handlerInput.requestEnvelope.request.intent.name === 'WorstTeamIntent';
+    },
+    handle(handlerInput) {
+        const imageUrl = yeltzlandSpeech.teamImageUrl("Stourbridge");
+        return helper.cardWithSpeechAndImages(handlerInput, "Who's the worst team?", yeltzlandSpeech.worstTeamSpeak, "The worst team are Stourbridge Town", imageUrl, imageUrl);
+    }
+};
+
+const TeamBasedIntentHandler = {
+    canHandle(handlerInput) {
+        console.log("TeamBasedIntentHandler " + handlerInput.requestEnvelope.request.intent.name);
+      return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+        && (handlerInput.requestEnvelope.request.intent.name === 'FixtureIntent' || handlerInput.requestEnvelope.request.intent.name === 'ResultIntent');
+    },
+    async handle(handlerInput) {
+
+        // Pick up the team value from the slot
+        const teamSlot = handlerInput.requestEnvelope.request.intent.slots.Team;
+        var team = "";
+        if (teamSlot) {
+            team = teamSlot.value;
+        }
+
+        console.log("TeamBasedIntentHandler " + team);
+
+        const cardTitle = "Halesowen games against " + yeltzlandSpeech.titleCase(team);
+        const useFixtures = (handlerInput.requestEnvelope.request.intent.name == "FixtureIntent");
+        const result = await yeltzlandSpeech.teamBased(useFixtures, team);
+        const imageUrl = yeltzlandSpeech.teamImageUrl(team);
+
+        return helper.cardWithSpeechAndImages(handlerInput, cardTitle, result.speechOutput, imageUrl, imageUrl);
+    }
+};
+
+const TimeBasedIntentHandler = {
+    canHandle(handlerInput) {
+        console.log("TeamBasedIntentHandler " + handlerInput.requestEnvelope.request.intent.name);
+      return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+        && handlerInput.requestEnvelope.request.intent.name === 'GameTimeIntent';
+    },
+    async handle(handlerInput) {
+        // Pick up the time start and end requested
+        var timeSlot = handlerInput.requestEnvelope.request.intent.slots.date.value;
+        var timeStart = null;
+        var timeEnd = null;
+        
+        if (timeSlot) {
+            var eventDate = new AmazonDateParser(timeSlot);
+            timeStart = eventDate.startDate;
+            timeEnd = eventDate.endDate;
+        }
+
+        const cardTitle = "Halesowen games";
+
+        if (timeStart == null || timeEnd == null) {
+            return helper.card(handlerInput, cardTitle, "No games found on that day");
+        } else {
+            const result = await yeltzlandSpeech.timeBased(timeStart, timeEnd);
+            return helper.cardWithReprompt(handlerInput, cardTitle, result.speechOutput);
+        }
+    }
+};
+
+const SingleGameIntentHandler = {
+    canHandle(handlerInput) {
+        console.log("TeamBasedIntentHandler " + handlerInput.requestEnvelope.request.intent.name);
+      return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+        && (handlerInput.requestEnvelope.request.intent.name === 'NextGameIntent' || handlerInput.requestEnvelope.request.intent.name === 'LastResultIntent');
+    },
+    async handle(handlerInput) {
+        var useFixtures = (handlerInput.requestEnvelope.request.intent.name == "NextGameIntent");
+
+        const result = await yeltzlandSpeech.singleGame(useFixtures);
+        return helper.cardWithReprompt(handlerInput, result.cardTitle, result.speechOutput);
+    }
+};
+
+const GameScoreIntentHandler = {
+    canHandle(handlerInput) {
+        console.log("TeamBasedIntentHandler " + handlerInput.requestEnvelope.request.intent.name);
+      return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+        && handlerInput.requestEnvelope.request.intent.name === 'GameScoreIntent';
+    },
+    async handle(handlerInput) {
+        const result = await yeltzlandSpeech.gameScore();
+        return helper.cardWithReprompt(handlerInput, "Latest score", result.speechOutput);
+    }
+};
+
+/* Setup lambda interface */
+exports.handler = Alexa.SkillBuilders.custom()
+  .addRequestHandlers(
+    LaunchRequestHandler,
+    HelpIntentHandler,
+    CancelAndStopIntentHandler,
+    SessionEndedRequestHandler,
+
+    BestTeamIntentHandler,
+    WorstTeamIntentHandler,
+    TeamBasedIntentHandler,
+    TimeBasedIntentHandler,
+    SingleGameIntentHandler,
+    GameScoreIntentHandler,
     
-    if (timeSlot) {
-        var eventDate = new AmazonDateParser(timeSlot);
-        timeStart = eventDate.startDate;
-        timeEnd = eventDate.endDate;
-    }
-
-    const cardTitle = "Halesowen games";
-    if (timeStart == null || timeEnd == null) {
-        callback({}, buildSpeechletResponse(cardTitle, "No games found on that day", null, true));
-    } else {
-        yeltzlandSpeech.timeBased(timeStart, timeEnd, function(result) {
-            callback({}, buildSpeechletResponse(cardTitle, result.speechOutput, result.repromptText, true));
-        });
-    }
-}
-
-function bestTeam(intent, session, callback) {
-    callback({}, buildSpeechletMarkupResponse("Who's the best team?", yeltzlandSpeech.bestTeamSpeak, "The best team are Halesowen Town", true));
-}
-
-function worstTeam(intent, session, callback) {
-    callback({}, buildSpeechletMarkupResponse("Who's the worst team?", yeltzlandSpeech.worstTeamSpeak, "The worst team are Stourbridge Town", true, "Stourbridge"));
-}
-
-function singleGame(intent, session, callback) {
-    var useFixtures = (intent.name == "NextGameIntent");
-
-    yeltzlandSpeech.singleGame(useFixtures, function(result) {
-        callback({}, buildSpeechletResponse(result.cardTitle, result.speechOutput, result.repromptText, true));
-    });
-}
-
-function gameScore(intent, session, callback) {
-    yeltzlandSpeech.gameScore(function(result) {
-        callback({}, buildSpeechletResponse("Latest score", result.speechOutput, result.repromptText, true));
-    });
-}
+    ErrorHandler
+)
+  .addErrorHandlers(ErrorHandler)
+  .lambda();
