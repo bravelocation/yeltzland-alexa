@@ -1,235 +1,244 @@
 {
   "interactionModel": {
-    "languageModel": {
-      "invocationName": "yeltzland",
-      "intents": [
-        {
-          "name": "FixtureIntent",
-          "slots": [
-            {
-              "name": "Team",
-              "type": "LIST_OF_TEAMS"
-            }
+      "languageModel": {
+          "invocationName": "yeltzland",
+          "intents": [
+              {
+                  "name": "FixtureIntent",
+                  "slots": [
+                      {
+                          "name": "Team",
+                          "type": "LIST_OF_TEAMS"
+                      }
+                  ],
+                  "samples": [
+                      "when is the game against {Team}",
+                      "when's the game against {Team}",
+                      "when do we play {Team}",
+                      "when do we play against {Team}",
+                      "when do we play next against {Team}",
+                      "when do we play against {Team} next"
+                  ]
+              },
+              {
+                  "name": "ResultIntent",
+                  "slots": [
+                      {
+                          "name": "Team",
+                          "type": "LIST_OF_TEAMS"
+                      }
+                  ],
+                  "samples": [
+                      "what was the result against {Team}",
+                      "what was the score against {Team}",
+                      "how did we get on against {Team}"
+                  ]
+              },
+              {
+                  "name": "NextGameIntent",
+                  "slots": [],
+                  "samples": [
+                      "who are we playing next",
+                      "who do we play next",
+                      "who are Halesowen playing next",
+                      "who do Halesowen play next",
+                      "when are we playing next",
+                      "when do we play next",
+                      "when are Halesowen playing next",
+                      "when do Halesowen play next"
+                  ]
+              },
+              {
+                  "name": "LastResultIntent",
+                  "slots": [],
+                  "samples": [
+                      "what was our last game",
+                      "what was our last result",
+                      "who did we play last",
+                      "who did we last play",
+                      "what was Halesowen's last game",
+                      "what was Halesowen's last result",
+                      "who did Halesowen play last",
+                      "who did Halesowen last play",
+                      "how did we get on",
+                      "how did we get on in the last game"
+                  ]
+              },
+              {
+                  "name": "BestTeamIntent",
+                  "slots": [],
+                  "samples": [
+                      "who are the best",
+                      "who's the best",
+                      "who are the best team",
+                      "who's the best team"
+                  ]
+              },
+              {
+                  "name": "WorstTeamIntent",
+                  "slots": [],
+                  "samples": [
+                      "who are the worst",
+                      "who are the worst team",
+                      "who's the worst",
+                      "who's the worst team"
+                  ]
+              },
+              {
+                  "name": "GameScoreIntent",
+                  "slots": [],
+                  "samples": [
+                      "what's the score",
+                      "what is the score",
+                      "what's the latest score",
+                      "what is the latest score",
+                      "what's the Halesowen score",
+                      "what is the Halesowen score",
+                      "what's the latest Halesowen score",
+                      "what is the latest Halesowen score",
+                      "how are Halesowen getting on"
+                  ]
+              },
+              {
+                  "name": "GameTimeIntent",
+                  "slots": [
+                      {
+                          "name": "date",
+                          "type": "AMAZON.DATE"
+                      }
+                  ],
+                  "samples": [
+                      "who do we play {date}",
+                      "who do we play on {date}",
+                      "who do Halesowen play {date}",
+                      "who do Halesowen play on {date}",
+                      "who did we play {date}",
+                      "who did we play on {date}",
+                      "who did Halesowen play {date}",
+                      "who did Halesowen play on {date}"
+                  ]
+              },
+              {
+                  "name": "AMAZON.HelpIntent",
+                  "samples": []
+              },
+              {
+                  "name": "AMAZON.NavigateHomeIntent",
+                  "samples": []
+              }
           ],
-          "samples": [
-            "when is the game against {Team}",
-            "when's the game against {Team}",
-            "when do we play {Team}",
-            "when do we play against {Team}",
-            "when do we play next against {Team}",
-            "when do we play against {Team} next"
+          "types": [
+              {
+                  "name": "LIST_OF_TEAMS",
+                  "values": [
+                      {
+                          "name": {
+                              "value": "AFC Rushden and Diamonds"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Alvechurch"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Banbury United"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Barwell"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Bedworth United"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Biggleswade Town"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Coalville Town"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Hitchin Town"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Kettering Town"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "King's Lynn Town"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Leiston"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Lowestoft Town"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Needham Market"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Redditch United"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Royston Town"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Rushall Olympic"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "St Ives Town"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "St Neots Town"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Stourbridge"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Stratford Town"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "Tamworth"
+                          }
+                      }
+                  ]
+              }
           ]
-        },
-        {
-          "name": "ResultIntent",
-          "slots": [
-            {
-              "name": "Team",
-              "type": "LIST_OF_TEAMS"
-            }
-          ],
-          "samples": [
-            "what was the result against {Team}",
-            "what was the score against {Team}",
-            "how did we get on against {Team}"
-          ]
-        },
-        {
-          "name": "NextGameIntent",
-          "samples": [
-            "who are we playing next",
-            "who do we play next",
-            "who are Halesowen playing next",
-            "who do Halesowen play next",
-            "when are we playing next",
-            "when do we play next",
-            "when are Halesowen playing next",
-            "when do Halesowen play next"
-          ]
-        },
-        {
-          "name": "LastResultIntent",
-          "samples": [
-            "what was our last game",
-            "what was our last result",
-            "who did we play last",
-            "who did we last play",
-            "what was Halesowen's last game",
-            "what was Halesowen's last result",
-            "who did Halesowen play last",
-            "who did Halesowen last play",
-            "how did we get on",
-            "how did we get on in the last game"
-          ]
-        },
-        {
-          "name": "BestTeamIntent",
-          "samples": [
-            "who are the best",
-            "who's the best",
-            "who are the best team",
-            "who's the best team"
-          ]
-        },
-        {
-          "name": "WorstTeamIntent",
-          "samples": [
-            "who are the worst",
-            "who are the worst team",
-            "who's the worst",
-            "who's the worst team"
-          ]
-        },
-        {
-          "name": "GameScoreIntent",
-          "samples": [
-            "what's the score",
-            "what is the score",
-            "what's the latest score",
-            "what is the latest score",
-            "what's the Halesowen score",
-            "what is the Halesowen score",
-            "what's the latest Halesowen score",
-            "what is the latest Halesowen score",
-            "how are Halesowen getting on"
-          ]
-        },
-        {
-          "name": "GameTimeIntent",
-          "slots": [
-            {
-              "name": "date",
-              "type": "AMAZON.DATE"
-            }
-          ],
-          "samples": [
-            "who do we play {date}",
-            "who do we play on {date}",
-            "who do Halesowen play {date}",
-            "who do Halesowen play on {date}",
-            "who did we play {date}",
-            "who did we play on {date}",
-            "who did Halesowen play {date}",
-            "who did Halesowen play on {date}"
-          ]
-        },
-        {
-          "name": "AMAZON.HelpIntent",
-          "samples": []
-        }
-      ],
-      "types": [
-        {
-          "values": [
-            {
-              "name": {
-                "value": "AFC Rushden and Diamonds"
-              }
-            },
-            {
-              "name": {
-                "value": "Alvechurch"
-              }
-            },
-            {
-              "name": {
-                "value": "Banbury United"
-              }
-            },
-            {
-              "name": {
-                "value": "Barwell"
-              }
-            },
-            {
-              "name": {
-                "value": "Bedworth United"
-              }
-            },
-            {
-              "name": {
-                "value": "Biggleswade Town"
-              }
-            },
-            {
-              "name": {
-                "value": "Coalville Town"
-              }
-            },
-            {
-              "name": {
-                "value": "Hitchin Town"
-              }
-            },
-            {
-              "name": {
-                "value": "Kettering Town"
-              }
-            },
-            {
-              "name": {
-                "value": "King's Lynn Town"
-              }
-            },
-            {
-              "name": {
-                "value": "Leiston"
-              }
-            },
-            {
-              "name": {
-                "value": "Lowestoft Town"
-              }
-            },
-            {
-              "name": {
-                "value": "Needham Market"
-              }
-            },
-            {
-              "name": {
-                "value": "Redditch United"
-              }
-            },
-            {
-              "name": {
-                "value": "Royston Town"
-              }
-            },
-            {
-              "name": {
-                "value": "Rushall Olympic"
-              }
-            },
-            {
-              "name": {
-                "value": "St Ives Town"
-              }
-            },
-            {
-              "name": {
-                "value": "St Neots Town"
-              }
-            },
-            {
-              "name": {
-                "value": "Stourbridge"
-              }
-            },
-            {
-              "name": {
-                "value": "Stratford Town"
-              }
-            },
-            {
-              "name": {
-                "value": "Tamworth"
-              }
-            }
-          ],
-          "name": "LIST_OF_TEAMS"
-        }
-      ]
-    }
+      }
   }
 }
