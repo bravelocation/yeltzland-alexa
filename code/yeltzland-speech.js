@@ -126,6 +126,7 @@ yeltzlandSpeech.timeBased = async function(timeStart, timeEnd, callback) {
 yeltzlandSpeech.singleGame = async function(useFixtures) {
     let cardTitle = "No games found";
     let speechOutput = "";
+    let textOutput = "";
     let repromptText = null;
     let team = null;
     let matches = [];
@@ -134,7 +135,8 @@ yeltzlandSpeech.singleGame = async function(useFixtures) {
 
     if (data == null) {
         speechOutput = "I'm sorry I couldn't find that out right now";
-        repromptText = "Please try again later";        
+        repromptText = "Please try again later";     
+        textOutput =  "I'm sorry I couldn't find that out right now";           
     } else {
         var nextGame = null;
         var lastGame = null;
@@ -155,19 +157,23 @@ yeltzlandSpeech.singleGame = async function(useFixtures) {
         if (useFixtures) {
             if (nextGame == null) {
                 speechOutput = "No more fixtures found";
+                textOutput = "No more fixtures found";
             } else {
                 cardTitle = matchToTitle(nextGame)
                 matches.push(nextGame);
                 speechOutput = matchesToSpeech(matches);
+                textOutput = matchesToText(matches);
                 team = nextGame.Opponent
             }
         } else {
             if (lastGame == null) {
                 speechOutput = "No more games found";
+                textOutput = "No more games found";
             } else {
                 cardTitle = matchToTitle(lastGame)
                 matches.push(lastGame);
                 speechOutput = matchesToSpeech(matches);
+                textOutput = matchesToText(matches);
                 team = lastGame.Opponent;
             }
         }
@@ -176,6 +182,7 @@ yeltzlandSpeech.singleGame = async function(useFixtures) {
     var result = {
         speechOutput: speechOutput,
         repromptText: repromptText,
+        textOutput: textOutput,
         cardTitle: cardTitle,
         matches: matches,
         team: team
@@ -187,6 +194,7 @@ yeltzlandSpeech.singleGame = async function(useFixtures) {
 yeltzlandSpeech.gameScore = async function() {
     let speechOutput = "";
     let repromptText = null;
+    let textOutput = "";    
     let cardTitle = "Latest score";
     let team = null;
     let matches = [];
@@ -195,6 +203,7 @@ yeltzlandSpeech.gameScore = async function() {
 
     if (data == null) {
         speechOutput = "I'm sorry I couldn't find that out right now";
+        textOutput = "I'm sorry I couldn't find that out right now";
         repromptText = "Please try again later";
     } else {
         var opponent = data.match.Opponent;
@@ -203,11 +212,14 @@ yeltzlandSpeech.gameScore = async function() {
         var opponentScore = data.opponentScore || 0;
 
         speechOutput = "The latest score is ";
+        textOutput = "The latest score is ";
 
         if (home) {
             speechOutput += "Halesowen Town " + speakScore(yeltzScore) + ", " + teamToSpeech(opponent) + " " + speakScore(opponentScore);
+            textOutput += "Halesowen Town " + yeltzScore + " -  " + opponent + " " + opponentScore;
         } else {
             speechOutput += teamToSpeech(opponent) + " " + speakScore(opponentScore) + ", Halesowen Town " + speakScore(yeltzScore);               
+            textOutput += teamToSpeech(opponent) + " " + opponentScore + " - Halesowen Town " + yeltzScore;               
         }
 
         var generatedMatch = {
@@ -224,6 +236,7 @@ yeltzlandSpeech.gameScore = async function() {
     var result = {
         speechOutput: speechOutput,
         repromptText: repromptText,
+        textOutput: textOutput,
         cardTitle: cardTitle,
         matches: matches,
         team: team

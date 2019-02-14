@@ -144,7 +144,13 @@ const SingleGameIntentHandler = {
         var useFixtures = (handlerInput.requestEnvelope.request.intent.name == "NextGameIntent");
 
         const result = await yeltzlandSpeech.singleGame(useFixtures);
-        return helper.cardWithReprompt(handlerInput, result.cardTitle, result.speechOutput);
+
+        if (result.matches && result.matches.length < 0) {
+            const imageUrl = yeltzlandSpeech.teamImageUrl(result.matches[0].Opponent);
+            return helper.cardWithSpeechAndImages(handlerInput, result.cardTitle, result.speechOutput, result.textOutput, imageUrl, imageUrl);
+        }
+
+        return helper.cardWithSpeech(handlerInput, result.cardTitle, result.speechOutput, result.textOutput);
     }
 };
 
@@ -155,7 +161,13 @@ const GameScoreIntentHandler = {
     },
     async handle(handlerInput) {
         const result = await yeltzlandSpeech.gameScore();
-        return helper.cardWithReprompt(handlerInput, yeltzlandSpeech.latestScoreTitle, result.speechOutput);
+
+        if (result.matches && result.matches.length < 0) {
+            const imageUrl = yeltzlandSpeech.teamImageUrl(result.matches[0].Opponent);
+            return helper.cardWithSpeechAndImages(handlerInput, yeltzlandSpeech.latestScoreTitle, result.speechOutput, result.textOutput, imageUrl, imageUrl);
+        }
+
+        return helper.cardWithSpeech(handlerInput, yeltzlandSpeech.latestScoreTitle, result.speechOutput, result.textOutput);
     }
 };
 
