@@ -3,12 +3,22 @@ const dateFormat = require('dateformat');
 
 var yeltzlandSpeech = {};
 yeltzlandSpeech.welcomeText = 'Ask about results, fixtures or the latest score.';
+yeltzlandSpeech.welcomeTitle = 'Welcome';
 yeltzlandSpeech.finishText = 'Thanks for coming!';
+yeltzlandSpeech.finishTitle = 'Bye';
 yeltzlandSpeech.fallbackText = "I didn't catch that. Can you ask me something else?";
 yeltzlandSpeech.bestTeamText = 'The best team is Halesowen Town';
-yeltzlandSpeech.worstTeamText = 'The worst team are Stourbridge Town';
+yeltzlandSpeech.errorText = "I'm sorry, something went wrong. Can you ask me something else?";
 yeltzlandSpeech.bestTeamSpeak = '<speak><p><emphasis level="strong">Halesowen Town</emphasis></p><p><emphasis level="strong">Halesowen Town F C</emphasis></p><p><emphasis level="strong">They\'re by far the greatest team</emphasis></p><p><emphasis level="strong">The world has ever seen</emphasis></p></speak>';
+yeltzlandSpeech.bestTeamTitle = "Who's the best team?";
+yeltzlandSpeech.bestTeamText = "The best team are Halesowen Town";
 yeltzlandSpeech.worstTeamSpeak = '<speak>The worst team are Stour <say-as interpret-as="expletive">bridge</say-as> Town</speak>';
+yeltzlandSpeech.worstTeamText = 'The worst team are Stourbridge Town';
+yeltzlandSpeech.worstTeamTitle = "Who's the worst team?";
+yeltzlandSpeech.gamesTitlePrefix = "Halesowen games against ";
+yeltzlandSpeech.halesowenGamesTitle = "Halesowen games";
+yeltzlandSpeech.noGamesFound = "No games found on that day";
+yeltzlandSpeech.latestScoreTitle = "Latest score";
 
 yeltzlandSpeech.teamBased = async function(useFixtures, team) {
     let speechOutput = "";

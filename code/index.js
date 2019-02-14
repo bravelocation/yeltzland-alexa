@@ -10,7 +10,7 @@ const LaunchRequestHandler = {
       return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
     },
     handle(handlerInput) {
-        return helper.cardWithReprompt(handlerInput, 'Welcome', yeltzlandSpeech.welcomeText);
+        return helper.cardWithReprompt(handlerInput, yeltzlandSpeech.welcomeTitle, yeltzlandSpeech.welcomeText);
     }
 };
 
@@ -20,7 +20,7 @@ const HelpIntentHandler = {
       && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
   },
   handle(handlerInput) {
-      return helper.card(handlerInput, 'Welcome', yeltzlandSpeech.welcomeText);
+      return helper.card(handlerInput, yeltzlandSpeech.welcomeTitle, yeltzlandSpeech.welcomeText);
   }
 };
 
@@ -31,7 +31,7 @@ const CancelAndStopIntentHandler = {
           || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
     },
     handle(handlerInput) {
-        return helper.card(handlerInput, 'Thanks for coming', yeltzlandSpeech.finishText);
+        return helper.card(handlerInput, yeltzlandSpeech.finishTitle, yeltzlandSpeech.finishText);
     }
 };
 
@@ -54,7 +54,7 @@ const ErrorHandler = {
             console.log(`Error handled: ${error.message}`);
         }
       
-        return helper.speakWithReprompt(handlerInput, 'Something went wrong');
+        return helper.speakWithReprompt(handlerInput, yeltzlandSpeech.errorText);
     },
 };
 
@@ -65,7 +65,7 @@ const BestTeamIntentHandler = {
         && handlerInput.requestEnvelope.request.intent.name === 'BestTeamIntent';
     },
     handle(handlerInput) {
-        return helper.cardWithSpeech(handlerInput, "Who's the best team?", yeltzlandSpeech.bestTeamSpeak, "The best team are Halesowen Town");
+        return helper.cardWithSpeech(handlerInput, yeltzlandSpeech.bestTeamTitle, yeltzlandSpeech.bestTeamSpeak, yeltzlandSpeech.bestTeamText);
     }
 };
 
@@ -76,13 +76,12 @@ const WorstTeamIntentHandler = {
     },
     handle(handlerInput) {
         const imageUrl = yeltzlandSpeech.teamImageUrl("Stourbridge");
-        return helper.cardWithSpeechAndImages(handlerInput, "Who's the worst team?", yeltzlandSpeech.worstTeamSpeak, "The worst team are Stourbridge Town", imageUrl, imageUrl);
+        return helper.cardWithSpeechAndImages(handlerInput, yeltzlandSpeech.worstTeamTitle, yeltzlandSpeech.worstTeamSpeak, yeltzlandSpeech.worstTeamText, imageUrl, imageUrl);
     }
 };
 
 const TeamBasedIntentHandler = {
     canHandle(handlerInput) {
-        console.log("TeamBasedIntentHandler " + handlerInput.requestEnvelope.request.intent.name);
       return handlerInput.requestEnvelope.request.type === 'IntentRequest'
         && (handlerInput.requestEnvelope.request.intent.name === 'FixtureIntent' || handlerInput.requestEnvelope.request.intent.name === 'ResultIntent');
     },
@@ -95,9 +94,7 @@ const TeamBasedIntentHandler = {
             team = teamSlot.value;
         }
 
-        console.log("TeamBasedIntentHandler " + team);
-
-        const cardTitle = "Halesowen games against " + yeltzlandSpeech.titleCase(team);
+        const cardTitle = yeltzlandSpeech.gamesTitlePrefix + yeltzlandSpeech.titleCase(team);
         const useFixtures = (handlerInput.requestEnvelope.request.intent.name == "FixtureIntent");
         const result = await yeltzlandSpeech.teamBased(useFixtures, team);
         const imageUrl = yeltzlandSpeech.teamImageUrl(team);
@@ -108,8 +105,7 @@ const TeamBasedIntentHandler = {
 
 const TimeBasedIntentHandler = {
     canHandle(handlerInput) {
-        console.log("TeamBasedIntentHandler " + handlerInput.requestEnvelope.request.intent.name);
-      return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+       return handlerInput.requestEnvelope.request.type === 'IntentRequest'
         && handlerInput.requestEnvelope.request.intent.name === 'GameTimeIntent';
     },
     async handle(handlerInput) {
@@ -124,20 +120,17 @@ const TimeBasedIntentHandler = {
             timeEnd = eventDate.endDate;
         }
 
-        const cardTitle = "Halesowen games";
-
         if (timeStart == null || timeEnd == null) {
-            return helper.card(handlerInput, cardTitle, "No games found on that day");
+            return helper.card(handlerInput, yeltzlandSpeech.halesowenGamesTitle, yeltzlandSpeech.noGamesFound);
         } else {
             const result = await yeltzlandSpeech.timeBased(timeStart, timeEnd);
-            return helper.cardWithReprompt(handlerInput, cardTitle, result.speechOutput);
+            return helper.cardWithReprompt(handlerInput, yeltzlandSpeech.halesowenGamesTitle, result.speechOutput);
         }
     }
 };
 
 const SingleGameIntentHandler = {
     canHandle(handlerInput) {
-        console.log("TeamBasedIntentHandler " + handlerInput.requestEnvelope.request.intent.name);
       return handlerInput.requestEnvelope.request.type === 'IntentRequest'
         && (handlerInput.requestEnvelope.request.intent.name === 'NextGameIntent' || handlerInput.requestEnvelope.request.intent.name === 'LastResultIntent');
     },
@@ -151,13 +144,12 @@ const SingleGameIntentHandler = {
 
 const GameScoreIntentHandler = {
     canHandle(handlerInput) {
-        console.log("TeamBasedIntentHandler " + handlerInput.requestEnvelope.request.intent.name);
       return handlerInput.requestEnvelope.request.type === 'IntentRequest'
         && handlerInput.requestEnvelope.request.intent.name === 'GameScoreIntent';
     },
     async handle(handlerInput) {
         const result = await yeltzlandSpeech.gameScore();
-        return helper.cardWithReprompt(handlerInput, "Latest score", result.speechOutput);
+        return helper.cardWithReprompt(handlerInput, yeltzlandSpeech.latestScoreTitle, result.speechOutput);
     }
 };
 
