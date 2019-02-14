@@ -1,7 +1,7 @@
-# yeltzland-alexa
+# Yeltzland - Alexa Skill
 Code for the Yeltzland Alexa skill
 
-It can tell you the latest Halesowen Town scores and fixtures if you ask nicely
+It can tell you the latest Halesowen Town scores and fixtures if you ask nicely.
 
 ## Testing locally
 
