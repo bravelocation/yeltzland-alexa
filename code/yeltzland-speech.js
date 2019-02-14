@@ -82,6 +82,7 @@ yeltzlandSpeech.teamBased = async function(useFixtures, team) {
 
 yeltzlandSpeech.timeBased = async function(timeStart, timeEnd, callback) {
     let speechOutput = "";
+    let textOutput = "";
     let repromptText = null;
     let matches = [];
 
@@ -89,7 +90,8 @@ yeltzlandSpeech.timeBased = async function(timeStart, timeEnd, callback) {
 
     if (data == null) {
         speechOutput = "I'm sorry I couldn't find that out right now";
-        repromptText = "Please try again later";        
+        repromptText = "Please try again later";   
+        textOutput =  "I'm sorry I couldn't find that out right now";        
     } else {
         // Go through each of the matches
         for (var i = 0; i < data.Matches.length; i++) {
@@ -104,14 +106,17 @@ yeltzlandSpeech.timeBased = async function(timeStart, timeEnd, callback) {
 
         if (matches.length == 0) {
             speechOutput = "No games found on that day";
+            textOutput = "No games found on that day";
         } else {
             speechOutput = matchesToSpeech(matches);
+            textOutput = matchesToText(matches);
         }
     }
 
     var result = {
         speechOutput: speechOutput,
         repromptText: repromptText,
+        textOutput: textOutput,
         matches: matches 
     }
 

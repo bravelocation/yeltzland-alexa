@@ -124,7 +124,13 @@ const TimeBasedIntentHandler = {
             return helper.card(handlerInput, yeltzlandSpeech.halesowenGamesTitle, yeltzlandSpeech.noGamesFound);
         } else {
             const result = await yeltzlandSpeech.timeBased(timeStart, timeEnd);
-            return helper.cardWithReprompt(handlerInput, yeltzlandSpeech.halesowenGamesTitle, result.speechOutput);
+
+            if (result.matches && result.matches.length < 0) {
+                const imageUrl = yeltzlandSpeech.teamImageUrl(result.matches[0].Opponent);
+                return helper.cardWithSpeechAndImages(handlerInput, yeltzlandSpeech.halesowenGamesTitle, result.speechOutput, result.textOutput, imageUrl, imageUrl);
+            }
+
+            return helper.cardWithSpeech(handlerInput, yeltzlandSpeech.halesowenGamesTitle, result.speechOutput, result.textOutput);
         }
     }
 };

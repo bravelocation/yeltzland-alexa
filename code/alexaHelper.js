@@ -11,7 +11,7 @@ AlexaHelper.card = function(handlerInput, cardTitle, speechText) {
 };
 
 AlexaHelper.cardWithSpeech = function(handlerInput, cardTitle, speechText, cardText) {
-    return this.cardWithSpeechAndImages(handlerInput, cardTitle, speechText, this.imageSmallUrl, this.imageLargeUrl);
+    return this.cardWithSpeechAndImages(handlerInput, cardTitle, speechText, cardText, this.imageSmallUrl, this.imageLargeUrl);
 };
   
 AlexaHelper.cardWithSpeechAndImages = function(handlerInput, cardTitle, speechText, cardText, smallImage, largeImage) {
