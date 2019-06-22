@@ -20,7 +20,7 @@ const HelpIntentHandler = {
       && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
   },
   handle(handlerInput) {
-      return helper.card(handlerInput, yeltzlandSpeech.welcomeTitle, yeltzlandSpeech.welcomeText);
+      return helper.cardWithReprompt(handlerInput, yeltzlandSpeech.welcomeTitle, yeltzlandSpeech.welcomeText);
   }
 };
 
