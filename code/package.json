@@ -6,10 +6,10 @@
   "main": "index.js",
   "dependencies": {
     "amazon-date-parser": "*",
-    "ask-sdk": "^2.3.0",
+    "ask-sdk": "^2.6.0",
     "dateformat": "*",
     "request": "^2.88.0",
-    "request-promise-native": "^1.0.5"
+    "request-promise-native": "^1.0.7"
   },
   "license": "MIT",
   "devDependencies": {
