@@ -250,7 +250,7 @@ yeltzlandSpeech.displayDate = function(matchDateString) {
 };
 
 yeltzlandSpeech.teamImageUrl = function(teamName) {
-    return "https://bravelocation.com/teamlogos/" + teamToSpeech(teamName).replace(' ', '_').toLowerCase() + ".png";
+    return "https://bravelocation.com/teamlogos/" + teamToSpeech(teamName).replace(/ /g, '_').toLowerCase() + ".png";
 };
 
 yeltzlandSpeech.titleCase = function(teamName) {

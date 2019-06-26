@@ -9,16 +9,16 @@ describe('Intent Tests', function() {
         testHarness.makeLocalSkillRequest("NextGameIntent", null, "<speak>We will play ", done);
     });
     it('Fixture Intent should return something', function(done) {
-        var teamSlot = { "Team": {"value":"Tamworth"}};
-        testHarness.makeLocalSkillRequest("FixtureIntent", teamSlot, "<speak>We will play Tamworth", done);
+        var teamSlot = { "Team": {"value":"Stourbridge"}};
+        testHarness.makeLocalSkillRequest("FixtureIntent", teamSlot, "<speak>We will play Stourbridge", done);
     }); 
     it('Result Intent should return something', function(done) {
-        var teamSlot = { "Team": {"value":"Romulus"}};
-        testHarness.makeLocalSkillRequest("ResultIntent", teamSlot, "<speak>We played Romulus", done);
+        var teamSlot = { "Team": {"value":"Stourbridge"}};
+        testHarness.makeLocalSkillRequest("ResultIntent", teamSlot, "<speak>We played Stourbridge", done);
     });  
     it('Result Intent should return team image', function(done) {
-        var teamSlot = { "Team": {"value":"Romulus"}};
-        testHarness.makeLocalSkillRequest("ResultIntent", teamSlot, "https://bravelocation.com/teamlogos/romulus.png", done, true);
+        var teamSlot = { "Team": {"value":"Stourbridge"}};
+        testHarness.makeLocalSkillRequest("ResultIntent", teamSlot, "https://bravelocation.com/teamlogos/stourbridge.png", done, true);
     }); 
 
     it('Best Team Intent works as expected', function(done) {
