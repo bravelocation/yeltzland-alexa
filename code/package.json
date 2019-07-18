@@ -9,12 +9,13 @@
     "ask-sdk": "^2.6.0",
     "dateformat": "*",
     "request": "^2.88.0",
-    "request-promise-native": "^1.0.7"
+    "request-promise-native": "^1.0.7",
+    "lodash": ">=4.17.13"
   },
   "license": "MIT",
   "devDependencies": {
-    "bst": "0.0.1",
-    "mocha": "^5.2.0"
+    "bst": "^0.0.1",
+    "mocha": "^6.1.2"
   },
   "scripts": {
     "test": "mocha ./test.js"
