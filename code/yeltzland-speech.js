@@ -214,6 +214,31 @@ yeltzlandSpeech.gameScore = async function() {
         speechOutput = "The latest score is ";
         textOutput = "The latest score is ";
 
+        // Get the fixtures, and see if we are in progress or not
+        const fixtures  = await getMatchesDataPromise();
+
+        var lastGame = null;
+        
+        // Go through each of the matches
+        for (var i = 0; i < fixtures.Matches.length; i++) {
+            var match = fixtures.Matches[i];      
+            
+            if ((match.TeamScore != null) && (match.OpponentScore != null)) {
+                lastGame = match;
+            }  
+        }
+
+        // Have we finished?
+        if (lastGame) {
+            if (data.match.MatchDateTime == lastGame.MatchDateTime) {
+                speechOutput = "The final score was ";
+                textOutput = "The final score was ";
+
+                yeltzScore = lastGame.TeamScore
+                opponentScore = lastGame.OpponentScore
+            }
+        }
+
         if (home) {
             speechOutput += "Halesowen Town " + speakScore(yeltzScore) + ", " + teamToSpeech(opponent) + " " + speakScore(opponentScore);
             textOutput += "Halesowen Town " + yeltzScore + " -  " + opponent + " " + opponentScore;
@@ -223,11 +248,14 @@ yeltzlandSpeech.gameScore = async function() {
         }
 
         var generatedMatch = {
-            Opponent: data.match.Opponent,
-            Home: data.match.Home,
-            TeamScore: data.yeltzScore,
-            OpponentScore: data.opponentScore
+            MatchID: data.match.MatchID,
+            MatchDateTime: data.match.MatchDateTime,
+            Opponent: opponent,
+            Home: home,
+            TeamScore: yeltzScore,
+            OpponentScore: opponentScore
         }
+
         cardTitle = matchToTitle(generatedMatch);
         matches.push(generatedMatch);
         team = opponent;
@@ -461,6 +489,7 @@ function getJSONPromise(url) {
 
     return response;
 };
+
 
 /* Export main object */
 exports.yeltzlandSpeech = yeltzlandSpeech;

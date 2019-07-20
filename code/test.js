@@ -41,7 +41,7 @@ describe('Intent Tests', function() {
     });
 
     it('Game Score Intent works as expected', function(done) {
-        testHarness.makeLocalSkillRequest("GameScoreIntent", null, "<speak>The latest score is ", done);
+        testHarness.makeLocalSkillRequest("GameScoreIntent", null, "<speak>The final score was ", done);
     });
 
 
