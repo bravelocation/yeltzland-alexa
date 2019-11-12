@@ -43,4 +43,4 @@ AlexaHelper.linkAccountCard = function(handlerInput, speechText) {
             .getResponse();
 }
 
-module.exports = AlexaHelper;AlexaHelper.js
+module.exports = AlexaHelper;
