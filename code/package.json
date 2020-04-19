@@ -5,17 +5,17 @@
   "version": "0.1.0",
   "main": "index.js",
   "dependencies": {
-    "amazon-date-parser": "*",
-    "ask-sdk": "^2.6.0",
+    "amazon-date-parser": "^0.3.0",
+    "ask-sdk": "^2.8.0",
     "dateformat": "*",
-    "request": "^2.88.0",
-    "request-promise-native": "^1.0.7",
-    "lodash": ">=4.17.13"
+    "lodash": "^4.17.15",
+    "request": "^2.88.2",
+    "request-promise-native": "^1.0.8"
   },
   "license": "MIT",
   "devDependencies": {
     "bst": "^0.0.1",
-    "mocha": "^6.1.2"
+    "mocha": "^6.2.3"
   },
   "scripts": {
     "test": "mocha ./test.js"
